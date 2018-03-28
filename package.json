@@ -11,7 +11,9 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "pug-loader": "^2.3.0",
+    "vis": "^4.21.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
