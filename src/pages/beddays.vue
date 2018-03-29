@@ -332,35 +332,42 @@ export default {
           },
           {
             from: 'wdhbstroke',
-            to: 'rehab'
+            to: 'rehab',
+            value: this.nWDHBUnder65
           },
           // ======================== Inside ED
           {
             from: 'pastapos',
-            to: 'psinegexternal'
+            to: 'psinegexternal',
+            value: this.nPSINegExternal
           },
           {
             from: 'pastapos',
-            to: 'psinegadhb'
+            to: 'psinegadhb',
+            value: this.nPSINegADHB
           },
           // ======================= ED to PSI
           {
             from: 'pastapos',
-            to: 'psipos'
+            to: 'psipos',
+            value: this.nPSI
           },
           // ==================== ED TO ISU
           {
             from: 'psinegexternal',
-            to: 'repat'
+            to: 'repat',
+            value: this.nPSINegExternal
           },
           {
             from: 'psipos',
-            to: 'hasu'
+            to: 'hasu',
+            value: this.nPSI
           },
           {
             from: 'psipos',
             to: 'repat',
-            dashes: true
+            dashes: true,
+            label: 'Future?'
           },
           {
             from: 'psinegadhb',
