@@ -12,8 +12,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "numeral": "^2.0.6",
+    "pug": "^2.0.3",
     "pug-loader": "^2.3.0",
-    "vis": "^4.21.0"
+    "vis": "^4.21.0",
+    "vue-animate": "0.0.4"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

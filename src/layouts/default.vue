@@ -1,82 +1,50 @@
-<template>
-  <q-layout view="lHh Lpr lFf">
-    <q-layout-header>
-      <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-        >
-          <q-icon name="menu" />
-        </q-btn>
+<template lang="pug">
+  q-layout(view="hHh Lpr lFf")
+    q-layout-header
+      q-toolbar(color="primary" glossy)
+        q-btn(flat dense round @click="leftDrawerOpen = !leftDrawerOpen")
+          q-icon(name="menu")
 
-        <q-toolbar-title>
-          Quasar App
-          <div slot="subtitle">Running on Quasar v{{ $q.version }}</div>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-layout-header>
+        q-toolbar-title ADHB ISU Bed Modeling
+          div(slot="subtitle") ADHB Integrated Stroke Unit Bed Modeling and Simulation E-Tool
 
-    <q-layout-drawer
-      v-model="leftDrawerOpen"
-      :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
-    >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
-        <q-list-header>Essential Links</q-list-header>
-        <q-item @click.native="openURL('http://quasar-framework.org')">
-          <q-item-side icon="school" />
-          <q-item-main label="Docs" sublabel="quasar-framework.org" />
-        </q-item>
-        <q-item @click.native="openURL('https://github.com/quasarframework/')">
-          <q-item-side icon="code" />
-          <q-item-main label="GitHub" sublabel="github.com/quasarframework" />
-        </q-item>
-        <q-item @click.native="openURL('https://discord.gg/5TDhbDg')">
-          <q-item-side icon="chat" />
-          <q-item-main label="Discord Chat Channel" sublabel="https://discord.gg/5TDhbDg" />
-        </q-item>
-        <q-item @click.native="openURL('http://forum.quasar-framework.org')">
-          <q-item-side icon="record_voice_over" />
-          <q-item-main label="Forum" sublabel="forum.quasar-framework.org" />
-        </q-item>
-        <q-item @click.native="openURL('https://twitter.com/quasarframework')">
-          <q-item-side icon="rss feed" />
-          <q-item-main label="Twitter" sublabel="@quasarframework" />
-        </q-item>
-      </q-list>
-    </q-layout-drawer>
+    q-layout-drawer(v-model="leftDrawerOpen" content-class="bg-grey-2")
+      q-list(no-border link inset-delimiter)
+        q-item(to="/")
+          q-item-side(icon="home")
+          q-item-main(label="Home")
+        q-item(to="/beddays")
+          q-item-side(icon="mdi-account-multiple")
+          q-item-main(label="Bed Days Per Year" sublabel="Bed Day Modeling")
+        q-item(to="/bedoccupancy")
+          q-item-side(icon="mdi-ambulance")
+          q-item-main(label="Bed Occupancy" sublabel="Bed occupancy simulation")
 
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-  </q-layout>
+    q-page-container
+      transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" mode="out-in" :duration="300" @leave="resetScroll")
+        router-view
 </template>
 
 <script>
-import { openURL } from 'quasar'
+require('vue-animate/dist/vue-animate.min.css')
 
 export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop
+      leftDrawerOpen: true
     }
   },
+  computed: {},
   methods: {
-    openURL
+    resetScroll (el, done) {
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+      done()
+    }
   }
 }
 </script>
 
-<style>
+<style lang="stylus">
 </style>
