@@ -32,7 +32,7 @@ export default {
       // N_ischemic = totalpopln * adults * incidence * hospitalised * ischemic
       return (
         this.totalPopln[popln] *
-        this.popGrowth ** (this.year - 2017) *
+        this.popGrowth ** (year - 2017) *
         0.8 *
         192 /
         100000 *
@@ -42,10 +42,10 @@ export default {
     },
     getPSI: function (year, popln, model) {
       // N_psi = N_ischemic * elibility * availability
-      return (
+      return Math.round(
         this.getIschemic(year, popln) *
-        this.eligibility[model] *
-        this.availability[popln][model]
+          this.eligibility[model] *
+          this.availability[popln][model]
       )
     }
   }

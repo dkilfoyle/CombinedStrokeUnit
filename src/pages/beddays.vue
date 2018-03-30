@@ -22,64 +22,79 @@
             q-field(label="Parameter Presets").q-mb-lg
               q-select(v-model="paramPreset" :options="paramPresetOptions")
             q-btn(@click="resetDefaults()" color="secondary" class="full-width") Reset All
-          q-collapsible(group="Flowchart" label="Flowchart" icon="view_quilt" separator)
+          q-collapsible(group="Flowchart" opened label="Flowchart" icon="view_quilt" separator)
             q-field(label="Year")
               q-option-group(inline v-model="year" :options=`[
                 {label: '2018', value: 2018},
                 {label: '2020', value: 2020},
                 {label: '2022', value: 2022},
-                {label: '2024', value: 2024},
-                {label: '2026', value: 2026}
+                {label: '2024', value: 2024}
                 ]`)
 
       div(slot="graph")
         flow-chart-viewer(title="PSI" :flowchartData="{nodes, edges}")
 
       div(slot="table")
-        table.q-table-old
-          thead
-            tr
-              th
-              th 2018
-              th 2019
-              th 2020
-              th 2021
-              th 2022
-              th 2023
-              th 2024
-          tbody
-            tr
-              td Patients
-            tr
-              td PSI
-            tr
-              td Diversions
-            tr
-              td HASU
-            tr
-              td ASU
-            tr
-              td Rehab
-            tr
-              td Discharges
-            tr
-              td Repatriations
-            tr
-              td Bed Days
-            tr
-              td HASU
-            tr
-              td ASU
-            tr
-              td Rehab
-            tr
-              td Beds
-            tr
-              td HASU
-            tr
-              td ASU
-            tr
-              td Rehab
+          table.q-table-old
+            thead
+              tr
+                th
+                th 2018
+                th 2019
+                th 2020
+                th 2021
+                th 2022
+                th 2023
+                th 2024
+            tbody
+              tr
+                td Patients
+              tr
+                td PSI
+                td(v-for="year in tableYears") {{ nPSI(year) }}
+              tr
+                td Diversions
+                td(v-for="year in tableYears") {{ nDiversions(year) }}
+              tr
+                td HASU
+                td(v-for="year in tableYears") {{ nHASU(year) }}
+              tr
+                td ASU
+                td(v-for="year in tableYears") {{ nASU(year) }}
+              tr
+                td Rehab
+                td(v-for="year in tableYears") {{ nRehab(year) }}
+              tr
+                td Discharges
+                td(v-for="year in tableYears") {{ nDischarge(year) }}
+              tr
+                td Repatriations
+                td(v-for="year in tableYears") {{ nRepatriation(year) }}
+              tr
+                td Bed Days
+              tr
+                td HASU
+                td(v-for="year in tableYears") {{ nHASUBedDays(year) }}
+              tr
+                td ASU
+                td(v-for="year in tableYears") {{ nASUBedDays(year) }}
+              tr
+                td Rehab
+                td(v-for="year in tableYears") {{ nRehabBedDays(year) }}
+              tr
+                td Beds @ 90% Occupancy (HASU 80%)
+              tr
+                td HASU
+                td(v-for="year in tableYears") {{ Math.ceil(nHASUBedDays(year) *100/80 / 365) }}
+              tr
+                td ASU
+                td(v-for="year in tableYears") {{ Math.ceil(nASUBedDays(year) *100/90 / 365) }}
+              tr
+                td Rehab
+                td(v-for="year in tableYears") {{ Math.ceil(nRehabBedDays(year) *100/90/ 365.0) }}
+              tr
+                td Total
+                td(v-for="year in tableYears") {{ Math.ceil((nHASUBedDays(year) + nASUBedDays(year) + nRehabBedDays(year)) *100/90/ 365.0) }}
 
 </template>
 
@@ -104,7 +119,7 @@ export default {
   mixins: [paramFilters, fcNodes, fcEdges, psimodels, diversionmodels],
   data () {
     return {
-      tableYears: [2018, 2019, 2020, 2021, 2022],
+      tableYears: [2018, 2019, 2020, 2021, 2022, 2022, 2023],
       paramGroups: [
         {label: 'Populations', icon: 'people'},
         {label: 'ED', icon: 'mdi-ambulance'},
@@ -137,103 +152,139 @@ export default {
   },
   methods: {
     nADHBStroke: function (year) {
-      return this.params.nADHBStroke.val * this.popGrowth ** (year - 2017)
+      return Math.round(
+        this.params.nADHBStroke.val * this.popGrowth ** (year - 2017)
+      )
     },
     nADHBTIA: function (year) {
-      return this.params.nADHBTIA.val * this.popGrowth ** (year - 2017)
+      return Math.round(
+        this.params.nADHBTIA.val * this.popGrowth ** (year - 2017)
+      )
     },
     nWDHBUnder65: function (year) {
-      return this.params.nWDHBUnder65.val * this.popGrowth ** (year - 2017)
+      return Math.round(
+        this.params.nWDHBUnder65.val * this.popGrowth ** (year - 2017)
+      )
     },
     nPASTAPosADHB: function (year) {
-      return this.nADHBStroke(year) * this.params.pPASTAPos.val
+      return Math.round(this.nADHBStroke(year) * this.params.pPASTAPos.val)
     },
     nPASTAPos: function (year) {
-      return (
+      return Math.round(
         this.nPASTAPosADHB(year) +
-        this.getDiversions(year, this.params.mDiversions.val) +
-        this.nPSITransfer(year)
+          this.getDiversions(year, this.params.mDiversions.val) +
+          this.nPSITransfer(year)
       )
     },
     nPSI: function (year) {
-      return (
+      return Math.round(
         this.getPSI(year, 'metro', this.params.mPSI.val) +
-        this.getPSI(year, 'nonmetro', this.params.mPSI.val)
+          this.getPSI(year, 'nonmetro', this.params.mPSI.val)
       )
     },
     nPSITransfer: function (year) {
       if (this.params.mDiversions.val === 'statusquo') {
         // all nonmetro + allhours non-adhb metro
-        return (
+        return Math.round(
           this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 * 1.0 +
-          this.getPSI(year, 'nonmetro', this.params.mPSI.val)
+            this.getPSI(year, 'nonmetro', this.params.mPSI.val)
         )
       } else {
         // all nonmetro + in hours non-adhb metro
-        return (
+        return Math.round(
           this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 * 0.39 +
-          this.getPSI(year, 'nonmetro', this.params.mPSI.val)
+            this.getPSI(year, 'nonmetro', this.params.mPSI.val)
         )
       }
+    },
+    nDiversions: function (year) {
+      return Math.round(this.getDiversions(year, this.params.mDiversions.val))
     },
     nPSIDiversions: function (year) {
       if (this.params.mDiversions.val === 'statusquo') {
         // wtk afterhours only
-        return this.getPSI(year, 'metro', this.params.mPSI.val) * 0.15 * 0.61
+        return Math.round(
+          this.getPSI(year, 'metro', this.params.mPSI.val) * 0.15 * 0.61
+        )
       } else {
         // non adhb after hours
-        return this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 * 0.61
+        return Math.round(
+          this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 * 0.61
+        )
       }
     },
     nPSINegExternal: function (year) {
-      return (
+      return Math.round(
         this.getDiversions(year, this.params.mDiversions.val) -
-        this.nPSIDiversions(year)
+          this.nPSIDiversions(year)
       )
     },
     nPSIPosADHB: function (year) {
-      return (
+      return Math.round(
         this.nPSI(year) - this.nPSITransfer(year) - this.nPSIDiversions(year)
       )
     },
     nPSINegADHB: function (year) {
-      return this.nPASTAPos(year) - this.nPSI(year) - this.nPSINegExternal(year)
+      return Math.round(
+        this.nPASTAPos(year) - this.nPSI(year) - this.nPSINegExternal(year)
+      )
     },
     nPSIExternal: function (year) {
-      return this.nPSI(year) - this.nPSIPosADHB(year)
+      return Math.round(this.nPSI(year) - this.nPSIPosADHB(year))
     },
     nPASTANeg: function (year) {
-      return this.nADHBStroke(year) * (1.0 - this.params.pPASTAPos.val)
+      return Math.round(
+        this.nADHBStroke(year) * (1.0 - this.params.pPASTAPos.val)
+      )
     },
     nHASU: function (year) {
-      return (
+      return Math.round(
         this.nPSINegADHB(year) * this.params.pPSINegHASU.val + this.nPSI(year)
       )
     },
     nTIA: function (year) {
-      return this.nADHBTIA(year)
+      return Math.round(this.nADHBTIA(year))
+    },
+    nASU: function (year) {
+      return Math.round(this.nASUStroke(year) + this.nASUTIA(year))
     },
     nASUStroke: function (year) {
-      return (
+      return Math.round(
         this.nPASTANeg(year) +
-        this.nPSINegADHB(year) * 0.5 +
-        this.nHASU(year) -
-        this.nRepatriation(year)
+          this.nPSINegADHB(year) * 0.5 +
+          this.nHASU(year) -
+          this.nPSIExternal(year)
       )
     },
     nASUTIA: function (year) {
-      return this.nTIA(year) * 0.5
+      return Math.round(this.nTIA(year) * 0.5)
     },
     nRepatriation: function (year) {
-      return (
+      return Math.round(
         this.nPSINegExternal(year) + this.nPSI(year) - this.nPSIPosADHB(year)
       )
     },
     nRehab: function (year) {
-      return this.nASUStroke(year) * this.params.pRehab.val
+      return Math.round(
+        this.nASUStroke(year) * this.params.pRehab.val + this.nWDHBUnder65(year)
+      )
     },
     nDischarge: function (year) {
-      return this.nASUStroke(year) + this.nASUTIA(year) + this.nRehab(year)
+      return Math.round(
+        this.nASUStroke(year) + this.nASUTIA(year) + this.nWDHBUnder65(year)
+      )
+    },
+    nHASUBedDays: function (year) {
+      return Math.round(this.nHASU(year) * this.params.nHASULOS.val)
+    },
+    nASUBedDays: function (year) {
+      return Math.round(
+        this.nASUStroke(year) * this.params.nASULOSStroke.val +
+          this.nASUTIA(year) * this.params.nASULOSTIA.val
+      )
+    },
+    nRehabBedDays: function (year) {
+      return Math.round(this.nRehab(year) * this.params.nRehabLOS.val)
     },
     resetDefaults: function () {
       var self = this

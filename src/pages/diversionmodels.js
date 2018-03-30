@@ -26,7 +26,7 @@ export default {
       // N_ischemic = totalpopln * annual growth * adults * incidence * hospitalised * ischemic
       return (
         this.totalPoplnDiversions[model] *
-        this.popGrowth ** (this.year - 2017) *
+        this.popGrowth ** (year - 2017) *
         0.8 *
         192 /
         100000 *
@@ -35,13 +35,13 @@ export default {
     },
     getDiversions: function (year, model) {
       // N_diversions = allstroke * acuity * hours * deficit * mRS * mimics
-      return (
+      return Math.round(
         this.getAllStroke(year, model) *
-        this.acuity[model] *
-        this.hours[model] *
-        0.44 *
-        0.79 *
-        1.25
+          this.acuity[model] *
+          this.hours[model] *
+          0.44 *
+          0.79 *
+          1.25
       )
     }
   }
