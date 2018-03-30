@@ -28,14 +28,22 @@ export default {
     }
   },
   methods: {
-    getIschemic: function (popln) {
+    getIschemic: function (year, popln) {
       // N_ischemic = totalpopln * adults * incidence * hospitalised * ischemic
-      return this.totalPopln[popln] * 0.8 * 192 / 100000 * 0.86 * 0.81
+      return (
+        this.totalPopln[popln] *
+        this.popGrowth ** (this.year - 2017) *
+        0.8 *
+        192 /
+        100000 *
+        0.86 *
+        0.81
+      )
     },
-    getPSI: function (popln, model) {
+    getPSI: function (year, popln, model) {
       // N_psi = N_ischemic * elibility * availability
       return (
-        this.getIschemic(popln) *
+        this.getIschemic(year, popln) *
         this.eligibility[model] *
         this.availability[popln][model]
       )

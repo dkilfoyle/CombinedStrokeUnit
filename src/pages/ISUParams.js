@@ -3,7 +3,7 @@ module.exports = {
     name: 'mDiversions',
     val: 'pragmatic',
     default: 'pragmatic',
-    group: 'Populations',
+    group: 'ed',
     label: 'Diversion Model',
     helper: 'Number of Ambulance Diversions from WDHB and CMDHB / year',
     type: 'select',
@@ -16,12 +16,12 @@ module.exports = {
   },
   nADHBStroke: {
     name: 'nADHBStroke',
-    val: 700,
-    default: 700,
+    val: 650,
+    default: 650,
     type: 'number',
     group: 'Populations',
     label: '# ADHB Stroke',
-    helper: 'Number of ADHB area stroke admissions per year'
+    helper: 'Number of ADHB area stroke admissions per year in 2017'
   },
   nADHBTIA: {
     name: 'nADHBTIA',

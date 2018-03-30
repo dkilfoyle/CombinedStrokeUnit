@@ -22,14 +22,21 @@ export default {
     }
   },
   methods: {
-    getAllStroke: function (model) {
-      // N_ischemic = totalpopln * adults * incidence * hospitalised * ischemic
-      return this.totalPoplnDiversions[model] * 0.8 * 192 / 100000 * 0.86
+    getAllStroke: function (year, model) {
+      // N_ischemic = totalpopln * annual growth * adults * incidence * hospitalised * ischemic
+      return (
+        this.totalPoplnDiversions[model] *
+        this.popGrowth ** (this.year - 2017) *
+        0.8 *
+        192 /
+        100000 *
+        0.86
+      )
     },
-    getDiversions: function (model) {
+    getDiversions: function (year, model) {
       // N_diversions = allstroke * acuity * hours * deficit * mRS * mimics
       return (
-        this.getAllStroke(model) *
+        this.getAllStroke(year, model) *
         this.acuity[model] *
         this.hours[model] *
         0.44 *

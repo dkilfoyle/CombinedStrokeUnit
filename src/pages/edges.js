@@ -13,26 +13,30 @@ export default {
         {
           from: 'psitransfer',
           to: 'pastapos',
-          value: this.nPSITransfer
+          value: this.nPSITransfer(this.year)
         },
         {
           from: 'diversions',
           to: 'pastapos',
-          value: this.getDiversions(this.params.mDiversions.val)
+          value: this.getDiversions(this.year, this.params.mDiversions.val)
         },
         {
           from: 'adhbstroke',
           to: 'pastapos',
           label:
-            p(this.params.pPASTAPos.val) + ' +ve\nn = ' + this.nPASTAPosADHB,
-          value: this.nPASTAPosADHB
+            p(this.params.pPASTAPos.val) +
+            ' +ve\nn = ' +
+            n(this.nPASTAPosADHB(this.year)),
+          value: this.nPASTAPosADHB(this.year)
         },
         {
           from: 'adhbstroke',
           to: 'pastaneg',
           label:
-            p(1.0 - this.params.pPASTAPos.val) + ' -ve\nn = ' + this.nPASTANeg,
-          value: this.nPASTANeg
+            p(1.0 - this.params.pPASTAPos.val) +
+            ' -ve\nn = ' +
+            n(this.nPASTANeg(this.year)),
+          value: this.nPASTANeg(this.year)
         },
         {
           from: 'adhbtia',
@@ -41,35 +45,35 @@ export default {
         {
           from: 'wdhbstroke',
           to: 'rehab',
-          value: this.nWDHBUnder65
+          value: this.nWDHBUnder65(this.year)
         },
         // ======================== Inside ED
         {
           from: 'pastapos',
           to: 'psinegexternal',
-          value: this.nPSINegExternal
+          value: this.nPSINegExternal(this.year)
         },
         {
           from: 'pastapos',
           to: 'psinegadhb',
-          value: this.nPSINegADHB
+          value: this.nPSINegADHB(this.year)
         },
         // ======================= ED to PSI
         {
           from: 'pastapos',
           to: 'psipos',
-          value: this.nPSI
+          value: this.nPSI(this.year)
         },
         // ==================== ED TO ISU
         {
           from: 'psinegexternal',
           to: 'repat',
-          value: this.nPSINegExternal
+          value: this.nPSINegExternal(this.year)
         },
         {
           from: 'psipos',
           to: 'hasu',
-          value: this.nPSI
+          value: this.nPSI(this.year)
         },
         {
           from: 'psipos',
@@ -83,7 +87,7 @@ export default {
           label:
             p(this.params.pPSINegHASU.val) +
             '\nn = ' +
-            n(this.params.pPSINegHASU.val * this.nPSINegADHB)
+            n(this.params.pPSINegHASU.val * this.nPSINegADHB(this.year))
         },
         {
           from: 'psinegadhb',
@@ -91,49 +95,52 @@ export default {
           label:
             p(1.0 - this.params.pPSINegHASU.val) +
             '\nn = ' +
-            n((1.0 - this.params.pPSINegHASU.val) * this.nPSINegADHB)
+            n((1.0 - this.params.pPSINegHASU.val) * this.nPSINegADHB(this.year))
         },
         {
           from: 'pastaneg',
           to: 'asu',
-          value: this.nPASTANeg
+          value: this.nPASTANeg(this.year)
         },
         {
           from: 'tiaed',
           to: 'asu',
           label: p(this.params.pTIAAdmitted.val) + ' Admitted',
-          value: this.params.pTIAAdmitted.val * this.nTIA
+          value: this.params.pTIAAdmitted.val * this.nTIA(this.year)
         },
         {
           from: 'hasu',
           to: 'repat',
-          label: n(this.nPSIExternal) + ' PSI',
-          value: this.nPSIExternal
+          label: n(this.nPSIExternal(this.year)) + ' PSI',
+          value: this.nPSIExternal(this.year)
         },
         {
           from: 'hasu',
           to: 'asu',
-          label: n(this.nHASU - this.nPSIExternal),
-          value: this.nHASU - this.nPSIExternal
+          label: n(this.nHASU(this.year) - this.nPSIExternal(this.year)),
+          value: this.nHASU(this.year) - this.nPSIExternal(this.year)
         },
         {
           from: 'asu',
           to: 'rehab',
           label: p(this.params.pRehab.val) + ' Stroke',
-          value: this.nASUStroke * this.params.pRehab.val
+          value: this.nASUStroke(this.year) * this.params.pRehab.val
         },
         {
           from: 'asu',
           to: 'discharge',
           label: n(
-            this.nASUTIA + this.nASUStroke * (1 - this.params.pRehab.val)
+            this.nASUTIA(this.year) +
+              this.nASUStroke(this.year) * (1 - this.params.pRehab.val)
           ),
-          value: this.nASUTIA + this.nASUStroke * (1 - this.params.pRehab.val)
+          value:
+            this.nASUTIA(this.year) +
+            this.nASUStroke(this.year) * (1 - this.params.pRehab.val)
         },
         {
           from: 'rehab',
           to: 'discharge',
-          value: this.nRehab
+          value: this.nRehab(this.year)
         }
       ]
     }
