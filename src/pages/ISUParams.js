@@ -1,17 +1,17 @@
 module.exports = {
-  nDiversions: {
-    name: 'nDiversions',
-    val: 356,
-    default: 356,
+  mDiversions: {
+    name: 'mDiversions',
+    val: 'pragmatic',
+    default: 'pragmatic',
     group: 'Populations',
     label: 'Diversion Model',
     helper: 'Number of Ambulance Diversions from WDHB and CMDHB / year',
     type: 'select',
     options: [
-      {label: 'Status Quo', value: 40},
-      {label: 'Pragmatic', value: 215},
-      {label: 'Expanded', value: 356},
-      {label: 'Future', value: 614}
+      {label: 'Status Quo', value: 'statusquo'},
+      {label: 'Pragmatic', value: 'pragmatic'},
+      {label: 'Expanded', value: 'expanded'},
+      {label: 'Future', value: 'future'}
     ]
   },
   nADHBStroke: {
@@ -92,8 +92,8 @@ module.exports = {
     min: 2,
     max: 100,
     type: 'slider',
-    group: 'Rehab',
-    label: 'Rehab LOS',
+    group: 'HASU/ASU',
+    label: 'HASU LOS',
     helper: 'Average LOS in rehab bed'
   },
   nASULOSStroke: {
@@ -104,7 +104,7 @@ module.exports = {
     max: 20,
     type: 'slider',
     group: 'HASU/ASU',
-    label: 'LOS Stroke in ASU',
+    label: 'ASU LOS Stroke',
     helper: 'Average LOS in for stroke patient in ASU'
   },
   nASULOSTIA: {
@@ -115,7 +115,7 @@ module.exports = {
     max: 10,
     type: 'slider',
     group: 'HASU/ASU',
-    label: 'LOS TIA',
+    label: 'ASU LOS TIA',
     helper: 'Average LOS for TIA in ASU'
   },
   pTIAAdmitted: {

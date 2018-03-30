@@ -26,42 +26,77 @@
               q-checkbox(v-model="bShowCustomParams")
 
       div(slot="graph")
-        flow-chart-viewer(title="PSI" :flowchartData="flowchartData" :presets=`[
-          { label: 'Zoom: Demographics', icon: 'people', nodes: ['Population', 'Adults', 'Strokes', 'Ischemic', 'LVO'] },
-          { label: 'Zoom: Early presenters', icon: 'timer', nodes: ['KTO', 'LT4h', 'GT4h', 'EarlyInclusion', 'EarlyExclusion', 'PSIReqd', 'PSINotReqd', 'TotalPSI']},
-          { label: 'Zoom: Late presenters', icon: 'timer_off', nodes: ['SUTO', 'TooLate', 'CTPBad', 'TotalPSI'] }
-        ]`)
+        flow-chart-viewer(title="PSI" :flowchartData="{nodes, edges}")
+
+      div(slot="table")
+        table.q-table-old
+          thead
+            tr
+              th
+              th 2018
+              th 2019
+              th 2020
+              th 2021
+              th 2022
+              th 2023
+              th 2024
+          tbody
+            tr
+              td Patients
+            tr
+              td PSI
+            tr
+              td Diversions
+            tr
+              td HASU
+            tr
+              td ASU
+            tr
+              td Rehab
+            tr
+              td Discharges
+            tr
+              td Repatriations
+            tr
+              td Bed Days
+            tr
+              td HASU
+            tr
+              td ASU
+            tr
+              td Rehab
+            tr
+              td Beds
+            tr
+              td HASU
+            tr
+              td ASU
+            tr
+              td Rehab
+
 </template>
 
 <script>
 import MyLayout from 'components/MyLayout'
-import PopulationSelector from 'components/PopulationSelector'
 import FlowChartViewer from 'components/FlowChartViewer'
 import CustomParamTable from './CustomParamTable'
-import numeral from 'numeral'
-import DHBs from 'components/dhbs.js'
 import Params from './ISUParams'
 import paramFilters from './paramFilters'
-
-var n = function (mynum) {
-  return numeral(mynum).format('0,0')
-}
-var p = function (mynum) {
-  return numeral(mynum).format('0%')
-}
+import fcNodes from './nodes'
+import fcEdges from './edges'
+import psimodels from './psimodels'
+import diversionmodels from './diversionmodels'
 
 export default {
   name: 'beddays',
   components: {
     CustomParamTable,
     FlowChartViewer,
-    MyLayout,
-    PopulationSelector
+    MyLayout
   },
-  mixins: [paramFilters],
+  mixins: [paramFilters, fcNodes, fcEdges, psimodels, diversionmodels],
   data () {
     return {
-      numeral: numeral,
       bShowCustomParams: true,
       tableYears: [2018, 2019, 2020, 2021, 2022],
       paramGroups: [
@@ -81,27 +116,7 @@ export default {
         {value: 'FutureMetro', label: 'FutureMetro'},
         {value: 'FutureNonMetro', label: 'FutureNonMetro'}
       ],
-      population: {
-        regions: ['Metro'],
-        dhbs: ['Auckland', 'Counties Manukau', 'Waitemata'],
-        year: 2018
-      },
-      params: Params,
-      DHBs: DHBs,
-      psi: {
-        metro: {
-          statusquo: 123,
-          pragmatic: 166,
-          expanded: 249,
-          future: 39
-        },
-        nonmetro: {
-          statusquo: 14,
-          pragmatic: 34,
-          expanded: 108,
-          future: 219
-        }
-      }
+      params: Params
     }
   },
   computed: {
@@ -110,28 +125,45 @@ export default {
     },
     nPASTAPos: function () {
       return (
-        this.nPASTAPosADHB + this.params.nDiversions.val + this.nPSITransfer
+        this.nPASTAPosADHB +
+        this.getDiversions(this.params.mDiversions.val) +
+        this.nPSITransfer
       )
     },
     nPSI: function () {
       return (
-        this.psi.metro[this.params.mPSI.val] +
-        this.psi.nonmetro[this.params.mPSI.val]
+        this.getPSI('metro', this.params.mPSI.val) +
+        this.getPSI('nonmetro', this.params.mPSI.val)
       )
     },
     nPSITransfer: function () {
-      // all nonmetro + in hours metro - adhb
-      return (
-        this.psi.metro[this.params.mPSI.val] * 0.7 * 0.39 +
-        this.psi.nonmetro[this.params.mPSI.val]
-      )
+      if (this.params.mDiversions.val === 'statusquo') {
+        // all nonmetro + allhours non-adhb metro
+        return (
+          this.getPSI('metro', this.params.mPSI.val) * 0.7 * 1.0 +
+          this.getPSI('nonmetro', this.params.mPSI.val)
+        )
+      } else {
+        // all nonmetro + in hours non-adhb metro
+        return (
+          this.getPSI('metro', this.params.mPSI.val) * 0.7 * 0.39 +
+          this.getPSI('nonmetro', this.params.mPSI.val)
+        )
+      }
     },
     nPSIDiversions: function () {
-      // non adhb after hours
-      return this.psi.metro[this.params.mPSI.val] * 0.7 * 0.61
+      if (this.params.mDiversions.val === 'statusquo') {
+        // wtk afterhours only
+        return this.getPSI('metro', this.params.mPSI.val) * 0.15 * 0.61
+      } else {
+        // non adhb after hours
+        return this.getPSI('metro', this.params.mPSI.val) * 0.7 * 0.61
+      }
     },
     nPSINegExternal: function () {
-      return this.params.nDiversions.val - this.nPSIDiversions
+      return (
+        this.getDiversions(this.params.mDiversions.val) - this.nPSIDiversions
+      )
     },
     nPSIPosADHB: function () {
       return this.nPSI - this.nPSITransfer - this.nPSIDiversions
@@ -173,261 +205,8 @@ export default {
     },
     flowchartData: function () {
       return {
-        nodes: [
-          // ===================== Inputs
-          {
-            id: 'psitransfer',
-            label: '*PSI Transfer*\nN=' + n(this.nPSITransfer),
-            level: 0,
-            group: 'start'
-          },
-          {
-            id: 'diversions',
-            label: '*Diversions*\nN=' + n(this.params.nDiversions.val),
-            level: 0,
-            group: 'start'
-          },
-          {
-            id: 'adhbstroke',
-            label: '*Stroke (ADHB)*\nN=' + n(this.params.nADHBStroke.val),
-            level: 0,
-            font: {multi: 'md'},
-            group: 'start'
-          },
-          {
-            id: 'blank1',
-            level: 0,
-            hidden: true
-          },
-          {
-            id: 'adhbtia',
-            label: '*TIA (ADHB)*\nN=' + n(this.params.nADHBTIA.val),
-            level: 0,
-            group: 'start'
-          },
-          {
-            id: 'wdhbstroke',
-            label: `*WDHB <65y\nn = ${n(this.params.nWDHBUnder65.val)}`,
-            level: 0,
-            group: 'start'
-          },
-          // ===================== ED
-          {
-            id: 'psinegexternal',
-            label: '*PSI -ve*\nExternal: ' + n(this.nPSINegExternal),
-            level: 1,
-            group: 'norm'
-          },
-          {
-            id: 'pastapos',
-            label: '*PASTA +ve*\nn = ' + n(this.nPASTAPos),
-            level: 1,
-            group: 'ed'
-          },
-          {
-            id: 'psinegadhb',
-            label: '*PSI -ve\nADHB: ' + n(this.nPSINegADHB),
-            level: 1,
-            group: 'norm'
-          },
-          {
-            id: 'pastaneg',
-            label: '*PASTA -ve*\nADHB: ' + n(this.nPASTANeg),
-            level: 1,
-            group: 'norm'
-          },
-          {
-            id: 'tiaed',
-            label: '*TIA*\nADHB:' + n(this.nTIA),
-            level: 1,
-            group: 'norm'
-          },
-          // ==================== NR
-          {id: 'psipos2', hidden: true, level: 2},
-          {
-            id: 'psipos',
-            label: '*PSI*\nN= ' + n(this.nPSI),
-            level: 2,
-            group: 'ed'
-          },
-          {id: 'psipos3', hidden: true, level: 2},
-          // {id: 'psipos3', label: '*PSI*\nN= ' + n(this.nPSI), level: 2},
-          // ==================== ISU
-          {
-            id: 'repat',
-            label: '*REPATRIATION*\nN = ' + n(this.nRepatriation),
-            level: 3,
-            group: 'end',
-            y: 2
-          },
-          {
-            id: 'blank2',
-            level: 3,
-            hidden: true
-          },
-          {
-            id: 'hasu',
-            label: `*HASU* n=${n(this.nHASU)}\nPSI External: ${n(
-              this.nPSIExternal
-            )}\nLOS: ${n(this.params.nHASULOS.val)}`,
-            level: 3,
-            group: 'norm'
-          },
-          {
-            id: 'asu',
-            label: `*ASU*\nStroke = ${n(this.nASUStroke)}, LOS: ${n(
-              this.params.nASULOSStroke.val
-            )}\nTIA = ${n(this.nASUTIA)}, LOS: ${n(
-              this.params.nASULOSTIA.val
-            )}`,
-            level: 3,
-            group: 'norm'
-          },
-          {
-            id: 'rehab',
-            label: `*Rehab*\nn = ${n(this.nRehab)}, LOS: ${n(
-              this.params.nRehabLOS.val
-            )}`,
-            level: 3,
-            group: 'norm'
-          },
-          // ================== discharge
-          {
-            id: 'discharge',
-            label: `*Discharge*\nn = ${n(this.nDischarge)}`,
-            level: 4,
-            group: 'end'
-          }
-        ],
-        edges: [
-          {
-            from: 'psitransfer',
-            to: 'pastapos',
-            value: this.nPSITransfer
-          },
-          {
-            from: 'diversions',
-            to: 'pastapos',
-            value: this.params.nDiversions.val
-          },
-          {
-            from: 'adhbstroke',
-            to: 'pastapos',
-            label:
-              p(this.params.pPASTAPos.val) + ' +ve\nn = ' + this.nPASTAPosADHB,
-            value: this.nPASTAPosADHB
-          },
-          {
-            from: 'adhbstroke',
-            to: 'pastaneg',
-            label:
-              p(1.0 - this.params.pPASTAPos.val) +
-              ' -ve\nn = ' +
-              this.nPASTANeg,
-            value: this.nPASTANeg
-          },
-          {
-            from: 'adhbtia',
-            to: 'tiaed'
-          },
-          {
-            from: 'wdhbstroke',
-            to: 'rehab',
-            value: this.nWDHBUnder65
-          },
-          // ======================== Inside ED
-          {
-            from: 'pastapos',
-            to: 'psinegexternal',
-            value: this.nPSINegExternal
-          },
-          {
-            from: 'pastapos',
-            to: 'psinegadhb',
-            value: this.nPSINegADHB
-          },
-          // ======================= ED to PSI
-          {
-            from: 'pastapos',
-            to: 'psipos',
-            value: this.nPSI
-          },
-          // ==================== ED TO ISU
-          {
-            from: 'psinegexternal',
-            to: 'repat',
-            value: this.nPSINegExternal
-          },
-          {
-            from: 'psipos',
-            to: 'hasu',
-            value: this.nPSI
-          },
-          {
-            from: 'psipos',
-            to: 'repat',
-            dashes: true,
-            label: 'Future?'
-          },
-          {
-            from: 'psinegadhb',
-            to: 'hasu',
-            label:
-              p(this.params.pPSINegHASU.val) +
-              '\nn = ' +
-              n(this.params.pPSINegHASU.val * this.nPSINegADHB)
-          },
-          {
-            from: 'psinegadhb',
-            to: 'asu',
-            label:
-              p(1.0 - this.params.pPSINegHASU.val) +
-              '\nn = ' +
-              n((1.0 - this.params.pPSINegHASU.val) * this.nPSINegADHB)
-          },
-          {
-            from: 'pastaneg',
-            to: 'asu',
-            value: this.nPASTANeg
-          },
-          {
-            from: 'tiaed',
-            to: 'asu',
-            label: p(this.params.pTIAAdmitted.val) + ' Admitted',
-            value: this.params.pTIAAdmitted.val * this.nTIA
-          },
-          {
-            from: 'hasu',
-            to: 'repat',
-            label: n(this.nPSIExternal) + ' PSI',
-            value: this.nPSIExternal
-          },
-          {
-            from: 'hasu',
-            to: 'asu',
-            label: n(this.nHASU - this.nPSIExternal),
-            value: this.nHASU - this.nPSIExternal
-          },
-          {
-            from: 'asu',
-            to: 'rehab',
-            label: p(this.params.pRehab.val) + ' Stroke',
-            value: this.nASUStroke * this.params.pRehab.val
-          },
-          {
-            from: 'asu',
-            to: 'discharge',
-            label: n(
-              this.nASUTIA + this.nASUStroke * (1 - this.params.pRehab.val)
-            ),
-            value: this.nASUTIA + this.nASUStroke * (1 - this.params.pRehab.val)
-          },
-          {
-            from: 'rehab',
-            to: 'discharge',
-            value: this.nRehab
-          }
-        ]
+        nodes: fcNodes,
+        edges: fcEdges
       }
     }
   },
@@ -439,83 +218,12 @@ export default {
           break
         case 'PragmaticMetro':
           this.resetDefaults()
-          this.population.regions = ['Metro']
-          this.population.dhbs = ['Auckland', 'Counties Manukau', 'Waitemata']
-          this.params.pAvailability2018.val = 0.58
-          this.params.pAvailability2022.val = 1.0
-          break
-        case 'PragmaticNonMetro':
-          this.resetDefaults()
-          this.population.regions = ['MidNorth']
-          this.population.dhbs = [
-            'Waikato',
-            'BOP',
-            'Tairawhiti',
-            'Lakes',
-            'Taranaki',
-            'Northland'
-          ]
-          this.params.pAvailability2018.val = 0.2
-          this.params.pAvailability2022.val = 0.7
-          this.params.pKTO.val = 0.68
-          this.params.pLT4h.val = 0.37
-          break
-        case 'OptimalMetro':
-          this.resetDefaults()
-          this.population.regions = ['Metro']
-          this.population.dhbs = ['Auckland', 'Counties Manukau', 'Waitemata']
-          this.params.pAvailability2018.val = 1.0
-          this.params.pAvailability2022.val = 1.0
-          break
-        case 'OptimalNonMetro':
-          this.resetDefaults()
-          this.population.regions = ['MidNorth']
-          this.population.dhbs = [
-            'Waikato',
-            'BOP',
-            'Tairawhiti',
-            'Lakes',
-            'Taranaki',
-            'Northland'
-          ]
-          this.params.pAvailability2018.val = 1.0
-          this.params.pAvailability2022.val = 1.0
-          this.params.pKTO.val = 0.7
-          this.params.pLT4h.val = 0.5
-          break
-        case 'FutureMetro':
-          this.resetDefaults()
-          this.population.regions = ['Metro']
-          this.population.dhbs = ['Auckland', 'Counties Manukau', 'Waitemata']
-          this.params.pAvailability2018.val = 1.0
-          this.params.pAvailability2022.val = 1.0
-          this.params.pKTO.val = 0.82
-          this.params.pLT4h.val = 0.85
-          break
-        case 'FutureNonMetro':
-          this.resetDefaults()
-          this.population.regions = ['MidNorth']
-          this.population.dhbs = [
-            'Waikato',
-            'BOP',
-            'Tairawhiti',
-            'Lakes',
-            'Taranaki',
-            'Northland'
-          ]
-          this.params.pAvailability2018.val = 1.0
-          this.params.pAvailability2022.val = 1.0
-          this.params.pKTO.val = 0.82
-          this.params.pLT4h.val = 0.85
           break
       }
     }
   },
   methods: {
     resetDefaults: function () {
-      this.population.regions = ['Metro']
-      this.population.dhbs = ['Auckland', 'Counties Manukau', 'Waitemata']
-      this.population.year = 2018
       var self = this
       Object.keys(this.params).forEach(function (paramName) {
         self.params[paramName].val = self.params[paramName].default
