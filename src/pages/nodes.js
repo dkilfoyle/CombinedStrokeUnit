@@ -11,21 +11,21 @@ export default {
         // ===================== Inputs
         {
           id: 'psitransfer',
-          label: '*PSI Transfer*\nN=' + n(this.nPSITransfer(this.year)),
+          label: '*PSI Transfer*\nn = ' + n(this.nPSITransfer(this.year)),
           level: 0,
           group: 'start'
         },
         {
           id: 'diversions',
           label:
-            '*Diversions*\nN=' +
+            '*Diversions*\nn = ' +
             n(this.getDiversions(this.year, this.params.mDiversions.val)),
           level: 0,
           group: 'start'
         },
         {
           id: 'adhbstroke',
-          label: '*Stroke (ADHB)*\nN=' + n(this.params.nADHBStroke.val),
+          label: '*Stroke (ADHB)*\nn = ' + n(this.params.nADHBStroke.val),
           level: 0,
           font: {multi: 'md'},
           group: 'start'
@@ -37,7 +37,7 @@ export default {
         },
         {
           id: 'adhbtia',
-          label: '*TIA (ADHB)*\nN=' + n(this.nADHBTIA(this.year)),
+          label: '*TIA (ADHB)*\nn = ' + n(this.nADHBTIA(this.year)),
           level: 0,
           group: 'start'
         },
@@ -50,7 +50,9 @@ export default {
         // ===================== ED
         {
           id: 'psinegexternal',
-          label: '*PSI -ve*\nExternal: ' + n(this.nPSINegExternal(this.year)),
+          label:
+            '*PSI / IVT -ve*\nExternal: ' +
+            n(this.nPSIIVTNegExternal(this.year)),
           level: 1,
           group: 'norm'
         },
@@ -62,7 +64,7 @@ export default {
         },
         {
           id: 'psinegadhb',
-          label: '*PSI -ve\nADHB: ' + n(this.nPSINegADHB(this.year)),
+          label: '*PSI / IVT -ve\nADHB: ' + n(this.nPSIIVTNegADHB(this.year)),
           level: 1,
           group: 'norm'
         },
@@ -82,7 +84,21 @@ export default {
         {id: 'psipos2', hidden: true, level: 2},
         {
           id: 'psipos',
-          label: '*PSI*\nN= ' + n(this.nPSI(this.year)),
+          label:
+            '*PSI*\nN= ' +
+            n(this.nPSI(this.year)) +
+            '\nTransfers: ' +
+            n(this.nPSITransfer(this.year)) +
+            '\nDiversions: ' +
+            n(this.nPSIDiversions(this.year)) +
+            '\nADHB: ' +
+            n(this.nPSIADHB(this.year)) +
+            '\n\n*IVT Only*\nN= ' +
+            n(this.nIVT(this.year)) +
+            '\nDiversions: ' +
+            n(this.nIVTDiversions(this.year)) +
+            '\nADHB: ' +
+            n(this.nIVTADHB(this.year)),
           level: 2,
           group: 'ed'
         },
@@ -91,7 +107,7 @@ export default {
         // ==================== ISU
         {
           id: 'repat',
-          label: '*REPATRIATION*\nN = ' + n(this.nRepatriation(this.year)),
+          label: '*REPATRIATION*\nn = ' + n(this.nRepatriation(this.year)),
           level: 3,
           group: 'end',
           y: 2
@@ -103,9 +119,9 @@ export default {
         },
         {
           id: 'hasu',
-          label: `*HASU* n=${n(this.nHASU(this.year))}\nPSI External: ${n(
-            this.nPSIExternal(this.year)
-          )}\nLOS: ${n(this.params.nHASULOS.val)}`,
+          label: `*HASU*\nn = ${n(this.nHASU(this.year))}, LOS: ${n(
+            this.params.nHASULOS.val
+          )}`,
           level: 3,
           group: 'norm'
         },

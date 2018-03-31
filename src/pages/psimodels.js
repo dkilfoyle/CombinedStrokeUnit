@@ -32,7 +32,7 @@ export default {
       // N_ischemic = totalpopln * adults * incidence * hospitalised * ischemic
       return (
         this.totalPopln[popln] *
-        this.popGrowth ** (year - 2017) *
+        (1.0 + this.params.popGrowth.val) ** (year - 2017) *
         0.8 *
         192 /
         100000 *

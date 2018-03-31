@@ -8,10 +8,10 @@ module.exports = {
     helper: 'Number of Ambulance Diversions from WDHB and CMDHB / year',
     type: 'select',
     options: [
-      {label: 'Status Quo', value: 'statusquo'},
-      {label: 'Pragmatic', value: 'pragmatic'},
-      {label: 'Expanded', value: 'expanded'},
-      {label: 'Future', value: 'future'}
+      {label: 'Status Quo (WTK)', value: 'statusquo'},
+      {label: 'Pragmatic (WDHB+CMDHB)', value: 'pragmatic'},
+      {label: 'Expanded (0-24h duration)', value: 'expanded'},
+      {label: 'Future (24/7)', value: 'future'}
     ]
   },
   nADHBStroke: {
@@ -40,6 +40,24 @@ module.exports = {
     group: 'Populations',
     label: '# WDHB <65 Stroke Rehab',
     helper: 'Number of WDHB area <65y stroke rehab patients'
+  },
+  popGrowth: {
+    name: 'popGrowth',
+    val: 0.02,
+    default: 0.02,
+    type: 'percent',
+    group: 'Populations',
+    label: 'Annual Popln Growth',
+    helper: '% population growth'
+  },
+  pIVTOnly: {
+    name: 'pIVTOnly',
+    val: 0.06,
+    default: 0.06,
+    type: 'percent',
+    group: 'ED',
+    label: 'IVT Only',
+    helper: '% of ischemic stroke having IVT without PSI'
   },
   mPSI: {
     name: 'mPSI',
@@ -127,13 +145,31 @@ module.exports = {
     label: '% TIA Admitted',
     helper: '% of TIA seen in ED admitted to ASU'
   },
-  pPSINegHASU: {
+  pPSIIVTNegHASU: {
     name: 'pPSINegHASU',
-    val: 0.5,
-    default: 0.5,
+    val: 0.2,
+    default: 0.2,
     type: 'percent',
     group: 'ED',
     label: '% PSI Neg to HASU',
     help: '% PASTA +ve/PSI -ve admitted to HASU vs ASU'
+  },
+  pHASUOccupancy: {
+    name: 'pHASUOccupancy',
+    val: 0.75,
+    default: 0.75,
+    type: 'percent',
+    group: 'Beds',
+    label: '% HASU Bed Occupancy',
+    help: 'Target % Occupancy of HASU Beds'
+  },
+  pASUOccupancy: {
+    name: 'pASUOccupancy',
+    val: 0.9,
+    default: 0.9,
+    type: 'percent',
+    group: 'Beds',
+    label: '% ASU Bed Occupancy',
+    help: 'Target % Occupancy of HASU Beds'
   }
 }

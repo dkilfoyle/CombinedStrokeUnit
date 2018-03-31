@@ -51,12 +51,12 @@ export default {
         {
           from: 'pastapos',
           to: 'psinegexternal',
-          value: this.nPSINegExternal(this.year)
+          value: this.nPSIIVTNegExternal(this.year)
         },
         {
           from: 'pastapos',
           to: 'psinegadhb',
-          value: this.nPSINegADHB(this.year)
+          value: this.nPSIIVTNegADHB(this.year)
         },
         // ======================= ED to PSI
         {
@@ -68,12 +68,13 @@ export default {
         {
           from: 'psinegexternal',
           to: 'repat',
-          value: this.nPSINegExternal(this.year)
+          value: this.nPSIIVTNegExternal(this.year)
         },
         {
           from: 'psipos',
           to: 'hasu',
-          value: this.nPSI(this.year)
+          value: this.nPSIIVT(this.year),
+          label: n(this.nPSIIVT(this.year))
         },
         {
           from: 'psipos',
@@ -85,17 +86,20 @@ export default {
           from: 'psinegadhb',
           to: 'hasu',
           label:
-            p(this.params.pPSINegHASU.val) +
+            p(this.params.pPSIIVTNegHASU.val) +
             '\nn = ' +
-            n(this.params.pPSINegHASU.val * this.nPSINegADHB(this.year))
+            n(this.params.pPSIIVTNegHASU.val * this.nPSIIVTNegADHB(this.year))
         },
         {
           from: 'psinegadhb',
           to: 'asu',
           label:
-            p(1.0 - this.params.pPSINegHASU.val) +
+            p(1.0 - this.params.pPSIIVTNegHASU.val) +
             '\nn = ' +
-            n((1.0 - this.params.pPSINegHASU.val) * this.nPSINegADHB(this.year))
+            n(
+              (1.0 - this.params.pPSIIVTNegHASU.val) *
+                this.nPSIIVTNegADHB(this.year)
+            )
         },
         {
           from: 'pastaneg',
@@ -111,14 +115,14 @@ export default {
         {
           from: 'hasu',
           to: 'repat',
-          label: n(this.nPSIExternal(this.year)) + ' PSI',
-          value: this.nPSIExternal(this.year)
+          label: n(this.nPSIIVTExternal(this.year)) + ' PSI/IVT',
+          value: this.nPSIIVTExternal(this.year)
         },
         {
           from: 'hasu',
           to: 'asu',
-          label: n(this.nHASU(this.year) - this.nPSIExternal(this.year)),
-          value: this.nHASU(this.year) - this.nPSIExternal(this.year)
+          label: n(this.nHASU(this.year) - this.nPSIIVTExternal(this.year)),
+          value: this.nHASU(this.year) - this.nPSIIVTExternal(this.year)
         },
         {
           from: 'asu',
