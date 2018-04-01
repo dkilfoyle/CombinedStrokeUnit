@@ -3,15 +3,15 @@
     my-layout
       div(slot="settings")
         q-list
-          q-list-header PSI Parameters
+          q-list-header ISU Parameters
           q-item-separator
 
           q-collapsible(v-for="paramGroup in paramGroups" :key="paramGroup.label" group="parameters" :label="paramGroup.label" :icon="paramGroup.icon" separator)
             q-alert(v-if="paramGroup.label==='Populations'" type="info").q-mb-lg
-              | Populations numbers in 2017
+              | Stroke and TIA numbers in 2017. These will be scaled up for annual population growth.
             q-field(v-for="param in Object.values(params).filter(p => p.group === paramGroup.label)" :key="param.name" :label="param.label" :helper="param | getHelper")
-              q-slider(v-if="param.type==='percent'" v-model="param.val" :min="0.00" :max="1.0" :step="0.01" :decimals="2" label-always :label-value="`${Math.round(param.val*100)}%`")
-              q-slider(v-if="param.type==='slider'" v-model="param.val" :min="param.min" :max="param.max" :step="(param.max-param.min)/100" :decimals="0" label-always :label-value="`${Math.round(param.val)}`")
+              q-slider(v-if="param.type==='percent'" v-model="param.val" :min="0.00" :max="param.max ? param.max : 1.0" :step="param.decimals ? 1/10**(param.decimals+2) : 0.01" :decimals="param.decimals ? param.decimals + 2 : 2" label-always :label-value="(param.val*100).toFixed(param.decimals ? param.decimals : 0) + '%'")
+              q-slider(v-if="param.type==='slider'" v-model="param.val" :min="param.min" :max="param.max" :step="(param.max-param.min)/100" :decimals="param.decimals ? param.decimals : 0" label-always :label-value="(param.val).toFixed(param.decimals ? param.decimals : 0)")
               q-input(v-if="param.type==='number'" v-model="param.val")
               q-select(v-if="param.type==='select'" v-model="param.val" :options="param.options")
 
@@ -311,7 +311,7 @@ export default {
       )
     },
     nASUTIA: function (year) {
-      return Math.round(this.nTIA(year) * 0.5)
+      return Math.round(this.nTIA(year) * this.params.pTIAAdmitted.val)
     },
     nRepatriation: function (year) {
       return Math.round(
