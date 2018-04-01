@@ -8,10 +8,12 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "deploy": "gh-pages -d dist/spa-mat"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "gh-pages": "^1.1.0",
     "numeral": "^2.0.6",
     "pug": "^2.0.3",
     "pug-loader": "^2.3.0",
@@ -35,9 +37,5 @@
     "node": ">= 8.9.0",
     "npm": ">= 5.6.0"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"]
 }
