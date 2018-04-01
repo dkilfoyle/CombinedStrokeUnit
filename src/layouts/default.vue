@@ -6,7 +6,7 @@
         //-   q-icon(name="menu")
 
         q-toolbar-title ADHB ISU Bed Modelling
-          div(slot="subtitle") ADHB Integrated Stroke Unit Bed Modeling and Simulation E-Tool
+          div(slot="subtitle") ADHB Integrated Stroke Unit Bed Modelling and Simulation E-Tool
 
     //- q-layout-drawer(v-model="leftDrawerOpen" content-class="bg-grey-2")
     //-   q-list(no-border link inset-delimiter)
