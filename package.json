@@ -1,8 +1,8 @@
 {
-  "name": "csu",
+  "name": "isu",
   "version": "1.0.0",
   "description": "A Quasar Framework app",
-  "productName": "CSU Estimator",
+  "productName": "ISU Estimator",
   "cordovaId": "org.cordova.quasar.app",
   "author": "D Kilfoyle",
   "private": true,
