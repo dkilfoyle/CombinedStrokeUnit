@@ -17,17 +17,18 @@ export default {
         },
         {
           id: 'diversions',
-          label:
-            '*Diversions*\nn = ' +
+          label: '*Diversions*\nn = ' +
             n(this.getDiversions(this.year, this.params.mDiversions.val)),
           level: 0,
           group: 'start'
         },
         {
           id: 'adhbstroke',
-          label: '*Stroke (ADHB)*\nn = ' + n(this.params.nADHBStroke.val),
+          label: '*Stroke (ADHB)*\nn = ' + n(this.nADHBStroke(this.year)), // n(this.params.nADHBStroke.val),
           level: 0,
-          font: {multi: 'md'},
+          font: {
+            multi: 'md'
+          },
           group: 'start'
         },
         {
@@ -50,8 +51,7 @@ export default {
         // ===================== ED
         {
           id: 'psinegexternal',
-          label:
-            '*PSI / IVT -ve*\nExternal: ' +
+          label: '*PSI / IVT -ve*\nExternal: ' +
             n(this.nPSIIVTNegExternal(this.year)),
           level: 1,
           group: 'norm'
@@ -81,11 +81,14 @@ export default {
           group: 'norm'
         },
         // ==================== NR
-        {id: 'psipos2', hidden: true, level: 2},
+        {
+          id: 'psipos2',
+          hidden: true,
+          level: 2
+        },
         {
           id: 'psipos',
-          label:
-            '*PSI*\nN= ' +
+          label: '*PSI*\nN= ' +
             n(this.nPSI(this.year)) +
             '\nTransfers: ' +
             n(this.nPSITransfer(this.year)) +
@@ -102,7 +105,11 @@ export default {
           level: 2,
           group: 'ed'
         },
-        {id: 'psipos3', hidden: true, level: 2},
+        {
+          id: 'psipos3',
+          hidden: true,
+          level: 2
+        },
         // {id: 'psipos3', label: '*PSI*\nN= ' + n(this.nPSI), level: 2},
         // ==================== ISU
         {

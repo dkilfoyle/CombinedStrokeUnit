@@ -8,20 +8,36 @@ module.exports = {
     helper: 'Number of Ambulance Diversions from WDHB and CMDHB / year',
     type: 'select',
     options: [
-      {label: 'Status Quo (WTK)', value: 'statusquo'},
-      {label: 'Pragmatic (WDHB+CMDHB)', value: 'pragmatic'},
-      {label: 'Expanded (0-24h duration)', value: 'expanded'},
-      {label: 'Future (24/7)', value: 'future'}
+      {
+        label: 'Status Quo (WTK)',
+        value: 'statusquo'
+      },
+      {
+        label: 'Pragmatic (WDHB+CMDHB)',
+        value: 'pragmatic'
+      },
+      {
+        label: 'Expanded (0-24h duration)',
+        value: 'expanded'
+      },
+      {
+        label: 'Future (24/7)',
+        value: 'future'
+      }
     ]
   },
   nADHBStroke: {
     name: 'nADHBStroke',
-    val: 650,
-    default: 650,
+    // From PP20 the total number of stroke (hemorrhage, ischemic, unspecified) discharges in 2017 was 163 + 159 + 294 + 192
+    // From PP20 ADHB admits 91% of all stroke to stroke unit
+    // At least 75 of these were outside PSIs
+    // Therefore total = (163 + 159 + 294 + 192) * 0.91 - 75 = 660
+    val: 660,
+    default: 660,
     type: 'number',
     group: 'Populations',
     label: '# ADHB Stroke',
-    helper: 'Number of ADHB area stroke admissions per year in 2017'
+    helper: 'Number of ADHB area stroke admissions in 2017'
   },
   nADHBTIA: {
     name: 'nADHBTIA',
@@ -30,7 +46,7 @@ module.exports = {
     type: 'number',
     group: 'Populations',
     label: '# ADHB TIA',
-    helper: 'Number of ADHB area TIA presentations to ED per year'
+    helper: 'Number of ADHB area TIA presentations to ED in 2017'
   },
   nWDHBUnder65: {
     name: 'nWDHBUnder65',
@@ -70,10 +86,22 @@ module.exports = {
     helper: 'Number of PSI (all areas) / year',
     type: 'select',
     options: [
-      {label: 'Status Quo', value: 'statusquo'},
-      {label: 'Pragmatic', value: 'pragmatic'},
-      {label: 'Expanded', value: 'expanded'},
-      {label: 'Future', value: 'future'}
+      {
+        label: 'Status Quo',
+        value: 'statusquo'
+      },
+      {
+        label: 'Pragmatic',
+        value: 'pragmatic'
+      },
+      {
+        label: 'Expanded',
+        value: 'expanded'
+      },
+      {
+        label: 'Future',
+        value: 'future'
+      }
     ]
   },
   pPASTAPos: {
@@ -153,12 +181,12 @@ module.exports = {
   },
   pPSIIVTNegHASU: {
     name: 'pPSINegHASU',
-    val: 0.2,
-    default: 0.2,
+    val: 0.5,
+    default: 0.5,
     type: 'percent',
     group: 'ED',
     label: '% PSI Neg to HASU',
-    help: '% PASTA +ve/PSI -ve admitted to HASU vs ASU'
+    help: '% PASTA +ve/PSI&IVT -ve admitted to HASU vs ASU'
   },
   pHASUOccupancy: {
     name: 'pHASUOccupancy',

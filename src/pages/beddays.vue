@@ -27,9 +27,10 @@
                 {label: '2018', value: 2018},
                 {label: '2020', value: 2020},
                 {label: '2022', value: 2022},
-                {label: '2024', value: 2024}
+                {label: '2024', value: 2024},
+                {label: '2030', value: 2030}
                 ]`)
-            .row.justify-center.q-mt-lg(style="overflow-x:auto")
+            .row.justify-center.q-mt-lg(style="overflow:auto")
               table.q-table-old
                 thead
                   tr
@@ -49,12 +50,12 @@
       div(slot="graph")
         flow-chart-viewer(title="PSI" :flowchartData="{nodes, edges}")
 
-      div(slot="table" style="overflow-x:auto;")
+      div(slot="table" style="overflow:scroll;")
         .row.justify-center
           table.q-table-old
             thead
               tr
-                th
+                th.headcol
                 th 2018
                 th 2019
                 th 2020

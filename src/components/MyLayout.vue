@@ -8,8 +8,8 @@
         q-tab(default name="graph" slot="title" label="Flowchart" icon="mdi-sitemap")
         q-tab(name="table" slot="title" label="Table" icon="mdi-table")
         q-tab-pane(name="table")
-          q-scroll-area(style="height: 73vh; padding:10px;"  :thumb-style="{ left: '0px', width: '5px' }")
-            slot(name="table")
+          //- q-scroll-area(style="height: 73vh; padding:10px;"  :thumb-style="{ left: '0px', width: '5px' }")
+          slot(name="table")
         q-tab-pane(name="graph")
           slot(name="graph")
 </template>
