@@ -6,24 +6,24 @@ module.exports = {
     group: 'ED',
     label: 'Diversion Model',
     helper: 'Number of Ambulance Diversions from WDHB and CMDHB / year',
+    tip: 'Pragmatic: acuity 49%, hours 61%.<br>Expanded: acuity 82%, hours 61%.<br>Future: acuity 82%, hours 100%.<br>All: 22% deficit, 79% mRS, mimics 1:5',
     type: 'select',
-    options: [
-      {
-        label: 'Status Quo (WTK)',
-        value: 'statusquo'
-      },
-      {
-        label: 'Pragmatic (WDHB+CMDHB)',
-        value: 'pragmatic'
-      },
-      {
-        label: 'Expanded (0-24h duration)',
-        value: 'expanded'
-      },
-      {
-        label: 'Future (24/7)',
-        value: 'future'
-      }
+    options: [{
+      label: 'Status Quo (6%, WTK)',
+      value: 'statusquo'
+    },
+    {
+      label: 'Pragmatic (6%, WDHB+CMDHB)',
+      value: 'pragmatic'
+    },
+    {
+      label: 'Expanded (10%, 0-24h duration)',
+      value: 'expanded'
+    },
+    {
+      label: 'Future (17%, 24/7)',
+      value: 'future'
+    }
     ]
   },
   nADHBStroke: {
@@ -32,21 +32,27 @@ module.exports = {
     // From PP20 ADHB admits 91% of all stroke to stroke unit
     // At least 75 of these were outside PSIs
     // Therefore total = (163 + 159 + 294 + 192) * 0.91 - 75 = 660
-    val: 660,
-    default: 660,
+    // -----------------------------------------------------------
+    // From ADT145 the total number of stroke admissions (LOS>0) from Neuro in 2017 was 608
+    // Of these 69 were PSI transfers and 4 were diversions
+    // Thus total ADHB area stroke admissions in 2017 = 607-69-4 = 535
+
+    val: 535,
+    default: 535,
     type: 'number',
     group: 'Populations',
     label: '# ADHB Stroke',
-    helper: 'Number of ADHB area stroke admissions in 2017'
+    helper: 'Number of ADHB area stroke admissions in 2017',
+    tip: 'From ADT145 the total number of stroke admissions (LOS>0) from Neuro in 2017 was 608.<br>Of these 69 were PSI transfers and 4 were diversions.<br>Thus total ADHB area stroke admissions in 2017 = 607-69-4 = 535'
   },
   nADHBTIA: {
     name: 'nADHBTIA',
-    val: 200,
-    default: 200,
+    val: 114,
+    default: 114,
     type: 'number',
     group: 'Populations',
     label: '# ADHB TIA',
-    helper: 'Number of ADHB area TIA presentations to ED in 2017'
+    helper: 'Number of TIA admissions (LOS>0d) in 2017'
   },
   nWDHBUnder65: {
     name: 'nWDHBUnder65',
@@ -79,29 +85,28 @@ module.exports = {
   },
   mPSI: {
     name: 'mPSI',
-    val: 'expanded',
-    default: 'expanded',
+    val: 'pragmatic',
+    default: 'pragmatic',
     group: 'Neuroradiology',
     label: 'PSI Model',
     helper: 'Number of PSI (all areas) / year',
     type: 'select',
-    options: [
-      {
-        label: 'Status Quo',
-        value: 'statusquo'
-      },
-      {
-        label: 'Pragmatic',
-        value: 'pragmatic'
-      },
-      {
-        label: 'Expanded',
-        value: 'expanded'
-      },
-      {
-        label: 'Future',
-        value: 'future'
-      }
+    options: [{
+      label: 'Status Quo',
+      value: 'statusquo'
+    },
+    {
+      label: 'Pragmatic',
+      value: 'pragmatic'
+    },
+    {
+      label: 'Expanded',
+      value: 'expanded'
+    },
+    {
+      label: 'Future',
+      value: 'future'
+    }
     ]
   },
   pPASTAPos: {
@@ -115,53 +120,57 @@ module.exports = {
   },
   pRehab: {
     name: 'pRehab',
-    val: 0.33,
-    default: 0.33,
+    val: 0.24,
+    default: 0.24,
     type: 'percent',
     group: 'Rehab',
     label: '% Rehab',
-    helper: '% of Stroke patients in ASU needing inpatient rehab'
+    helper: '% of Stroke patients in ASU needing inpatient rehab',
+    tip: 'From ADT145 data for neuro stroke discharges'
   },
   nRehabLOS: {
     name: 'nRehabLOS',
-    val: 22,
-    default: 22,
+    val: 22.7,
+    default: 22.7,
     min: 2,
     max: 100,
     decimals: 1,
     type: 'slider',
     group: 'Rehab',
     label: 'Rehab LOS',
-    helper: 'Average LOS in rehab bed'
+    helper: 'Average LOS in rehab bed',
+    tip: 'ADT145 data for patients referred from stroke neuro in 2017.'
   },
   nHASULOS: {
     name: 'nHASULOS',
-    val: 2,
-    default: 2,
+    val: 1.5,
+    default: 1.5,
     min: 1,
     max: 10,
     decimals: 1,
     type: 'slider',
     group: 'HASU/ASU',
     label: 'HASU LOS',
-    helper: 'Average LOS in rehab bed'
+    helper: 'Average LOS in HASU bed',
+    tip: 'Approximately 50% will LOS 24h, 50% 48h'
   },
   nASULOSStroke: {
     name: 'nASULOSStroke',
-    val: 4,
-    default: 4,
+    val: 3.0,
+    default: 3.0,
     min: 1,
     max: 20,
     decimals: 1,
     type: 'slider',
     group: 'HASU/ASU',
     label: 'ASU LOS Stroke',
-    helper: 'Average LOS in for stroke patient in ASU'
+    helper: 'Average LOS in for stroke patient in ASU',
+    tip: 'ADT145 Total Acute LOS = 3.8d. ASU phase will be shorter for those coming from HASU.'
   },
   nASULOSTIA: {
     name: 'nASULOSTIA',
-    val: 1,
-    default: 1,
+    val: 1.8,
+    default: 1.8,
     min: 1,
     max: 10,
     decimals: 1,
@@ -170,15 +179,15 @@ module.exports = {
     label: 'ASU LOS TIA',
     helper: 'Average LOS for TIA in ASU'
   },
-  pTIAAdmitted: {
-    name: 'pTIAAdmitted',
-    val: 0.5,
-    default: 0.5,
-    type: 'percent',
-    group: 'ED',
-    label: '% TIA Admitted',
-    helper: '% of TIA seen in ED admitted to ASU'
-  },
+  // pTIAAdmitted: {
+  //   name: 'pTIAAdmitted',
+  //   val: 0.5,
+  //   default: 0.5,
+  //   type: 'percent',
+  //   group: 'ED',
+  //   label: '% TIA Admitted',
+  //   helper: '% of TIA seen in ED admitted to ASU'
+  // },
   pPSIIVTNegHASU: {
     name: 'pPSINegHASU',
     val: 0.5,

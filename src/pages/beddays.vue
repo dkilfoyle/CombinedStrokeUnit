@@ -10,10 +10,16 @@
             q-alert(v-if="paramGroup.label==='Populations'" type="info").q-mb-lg
               | Stroke and TIA numbers in 2017. These will be scaled up for annual population growth.
             q-field(v-for="param in Object.values(params).filter(p => p.group === paramGroup.label)" :key="param.name" :label="param.label" :helper="param | getHelper")
-              q-slider(v-if="param.type==='percent'" v-model="param.val" :min="0.00" :max="param.max ? param.max : 1.0" :step="param.decimals ? 1/10**(param.decimals+2) : 0.01" :decimals="param.decimals ? param.decimals + 2 : 2" label-always :label-value="(param.val*100).toFixed(param.decimals ? param.decimals : 0) + '%'")
-              q-slider(v-if="param.type==='slider'" v-model="param.val" :min="param.min" :max="param.max" :step="(param.max-param.min)/100" :decimals="param.decimals ? param.decimals : 0" label-always :label-value="(param.val).toFixed(param.decimals ? param.decimals : 0)")
-              q-input(v-if="param.type==='number'" v-model="param.val")
-              q-select(v-if="param.type==='select'" v-model="param.val" :options="param.options")
+              .row.no-wrap
+                .col-10
+                  q-slider(v-if="param.type==='percent'" v-model="param.val" :min="0.00" :max="param.max ? param.max : 1.0" :step="param.decimals ? 1/10**(param.decimals+2) : 0.01" :decimals="param.decimals ? param.decimals + 2 : 2" label-always :label-value="(param.val*100).toFixed(param.decimals ? param.decimals : 0) + '%'")
+                  q-slider(v-if="param.type==='slider'" v-model="param.val" :min="param.min" :max="param.max" :step="(param.max-param.min)/100" :decimals="param.decimals ? param.decimals : 0" label-always :label-value="(param.val).toFixed(param.decimals ? param.decimals : 0)")
+                  q-input(v-if="param.type==='number'" v-model="param.val")
+                  q-select(v-if="param.type==='select'" v-model="param.val" :options="param.options")
+                .col-2
+                  q-chip(v-if="param.tip" small) ?
+                    q-tooltip(:delay="200")
+                      span(v-html="param.tip")
 
         q-list.q-mt-lg
           q-list-header Settings
@@ -119,12 +125,15 @@
 import MyLayout from 'components/MyLayout'
 import FlowChartViewer from 'components/FlowChartViewer'
 import CustomParamTable from './CustomParamTable'
-import Params from './ISUParams'
+// import Params from './ISUParams'
+import params from './userParams'
 import paramFilters from './paramFilters'
 import fcNodes from './nodes'
 import fcEdges from './edges'
 import psimodels from './psimodels'
 import diversionmodels from './diversionmodels'
+import ivtmodels from './ivtmodels'
+import populationmodels from './populationmodels'
 
 export default {
   name: 'beddays',
@@ -133,7 +142,16 @@ export default {
     FlowChartViewer,
     MyLayout
   },
-  mixins: [paramFilters, fcNodes, fcEdges, psimodels, diversionmodels],
+  mixins: [
+    params,
+    paramFilters,
+    fcNodes,
+    fcEdges,
+    psimodels,
+    diversionmodels,
+    ivtmodels,
+    populationmodels
+  ],
   data () {
     return {
       tableYears: [2018, 2019, 2020, 2021, 2022, 2022, 2023],
@@ -147,7 +165,6 @@ export default {
       ],
       paramPreset: 'Defaults',
       paramPresetOptions: [{value: 'Defaults', label: 'Defaults'}],
-      params: Params,
       year: 2018
     }
   },
@@ -160,114 +177,25 @@ export default {
     }
   },
   methods: {
-    nADHBStroke: function (year) {
-      return Math.round(
-        this.params.nADHBStroke.val *
-          (1.0 + this.params.popGrowth.val) ** (year - 2017)
-      )
-    },
-    nTIA: function (year) {
-      return Math.round(this.nADHBTIA(year))
-    },
-    nADHBTIA: function (year) {
-      return Math.round(
-        this.params.nADHBTIA.val *
-          (1.0 + this.params.popGrowth.val) ** (year - 2017)
-      )
-    },
-    nWDHBUnder65: function (year) {
-      return Math.round(
-        this.params.nWDHBUnder65.val *
-          (1.0 + this.params.popGrowth.val) ** (year - 2017)
-      )
-    },
     nPASTAPosADHB: function (year) {
       return Math.round(this.nADHBStroke(year) * this.params.pPASTAPos.val)
     },
     nPASTAPos: function (year) {
       return Math.round(
         this.nPASTAPosADHB(year) +
-          this.getDiversions(year, this.params.mDiversions.val) +
+          this.getDiversions(this.params.mDiversions.val, year) +
           this.nPSITransfer(year)
       )
     },
-
-    // =====================================================================
-
-    nPSI: function (year) {
-      return Math.round(
-        this.getPSI(year, 'metro', this.params.mPSI.val) +
-          this.getPSI(year, 'nonmetro', this.params.mPSI.val)
-      )
-    },
-    nPSIExternal: function (year) {
-      // external PSI = 70% of metro + all nonmetro
-      return Math.round(
-        this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 +
-          this.getPSI(year, 'nonmetro', this.params.mPSI.val)
-      )
-    },
-    nPSIDiversions: function (year) {
-      switch (this.params.mDiversions.val) {
-        case 'statusquo': // WTK only
-          return Math.round(
-            this.getPSI(year, 'metro', this.params.mPSI.val) * 0.15
-          )
-        case 'pragmatic': // WDHB + CMDHB after hours without the 0-24h duration
-          return Math.round(
-            this.getPSI(year, 'metro', this.params.mPSI.val) *
-              0.7 *
-              0.61 *
-              (11 / 14)
-          )
-        case 'expanded': // WDHB + CMDHB after hours including the 0-24h duration
-          return Math.round(
-            this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7 * 0.61
-          )
-        case 'future': // WDHB + CMDHB all hours
-          return Math.round(
-            this.getPSI(year, 'metro', this.params.mPSI.val) * 0.7
-          )
-        default:
-          stop('nPSIDiversions: invalid diversion model')
-      }
-    },
-    nPSITransfer: function (year) {
-      return this.nPSIExternal(year) - this.nPSIDiversions(year)
-    },
-    nPSIADHB: function (year) {
-      return this.nPSI(year) - this.nPSIExternal(year)
-    },
-
-    // ==================================================================================
-
-    nIVT: function (year) {
-      return this.nIVTDiversions(year) + this.nIVTADHB(year)
-    },
-    nIVTDiversions: function (year) {
-      return this.nDiversions(year) * this.params.pIVTOnly.val
-    },
-    nIVTExternal: function (year) {
-      return this.nIVTDiversions(year)
-    },
-    nIVTADHB: function (year) {
-      return this.getIschemic(year, 'metro') * 0.3 * this.params.pIVTOnly.val
-    },
-
-    // ==================================================================================
-
     nPSIIVT: function (year) {
       return this.nPSI(year) + this.nIVT(year)
     },
     nPSIIVTExternal: function (year) {
       return this.nPSIExternal(year) + this.nIVTExternal(year)
     },
-
-    // ===================================================================================
-
     nPSIIVTNegExternal: function (year) {
       return Math.round(
-        this.getDiversions(year, this.params.mDiversions.val) -
+        this.getDiversions(this.params.mDiversions.val, year) -
           this.nPSIDiversions(year) -
           this.nIVTDiversions(year)
       )
@@ -279,21 +207,11 @@ export default {
           this.nPSIIVTNegExternal(year)
       )
     },
-
     nPASTANeg: function (year) {
       return Math.round(
         this.nADHBStroke(year) * (1.0 - this.params.pPASTAPos.val)
       )
     },
-
-    // ====================================================================================
-
-    nDiversions: function (year) {
-      return Math.round(this.getDiversions(year, this.params.mDiversions.val))
-    },
-
-    // ====================================================================================
-
     nHASU: function (year) {
       return Math.round(
         this.nPSIIVTNegADHB(year) * this.params.pPSIIVTNegHASU.val +
@@ -312,7 +230,7 @@ export default {
       )
     },
     nASUTIA: function (year) {
-      return Math.round(this.nTIA(year) * this.params.pTIAAdmitted.val)
+      return Math.round(this.nADHBTIA(year)) // * this.params.pTIAAdmitted.val)
     },
     nRepatriation: function (year) {
       return Math.round(
@@ -386,5 +304,4 @@ export default {
 </script>
 
 <style>
-
 </style>

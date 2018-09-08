@@ -3,6 +3,9 @@ import numeral from 'numeral'
 var n = function (mynum) {
   return numeral(mynum).format('0,0')
 }
+var n1 = function (mynum) {
+  return numeral(mynum).format('0,0.1')
+}
 
 export default {
   computed: {
@@ -18,7 +21,7 @@ export default {
         {
           id: 'diversions',
           label: '*Diversions*\nn = ' +
-            n(this.getDiversions(this.year, this.params.mDiversions.val)),
+            n(this.getDiversions(this.params.mDiversions.val, this.year)),
           level: 0,
           group: 'start'
         },
@@ -74,12 +77,12 @@ export default {
           level: 1,
           group: 'norm'
         },
-        {
-          id: 'tiaed',
-          label: '*TIA*\nADHB:' + n(this.nTIA(this.year)),
-          level: 1,
-          group: 'norm'
-        },
+        // {
+        //   id: 'tiaed',
+        //   label: '*TIA*\nADHB:' + n(this.nTIA(this.year)),
+        //   level: 1,
+        //   group: 'norm'
+        // },
         // ==================== NR
         {
           id: 'psipos2',
@@ -126,7 +129,7 @@ export default {
         },
         {
           id: 'hasu',
-          label: `*HASU*\nn = ${n(this.nHASU(this.year))}, LOS: ${n(
+          label: `*HASU*\nn = ${n(this.nHASU(this.year))}, LOS: ${n1(
             this.params.nHASULOS.val
           )}`,
           level: 3,
@@ -134,9 +137,9 @@ export default {
         },
         {
           id: 'asu',
-          label: `*ASU*\nStroke = ${n(this.nASUStroke(this.year))}, LOS: ${n(
+          label: `*ASU*\nStroke = ${n(this.nASUStroke(this.year))}, LOS: ${n1(
             this.params.nASULOSStroke.val
-          )}\nTIA = ${n(this.nASUTIA(this.year))}, LOS: ${n(
+          )}\nTIA = ${n(this.nASUTIA(this.year))}, LOS: ${n1(
             this.params.nASULOSTIA.val
           )}`,
           level: 3,
@@ -144,7 +147,7 @@ export default {
         },
         {
           id: 'rehab',
-          label: `*Rehab*\nn = ${n(this.nRehab(this.year))}, LOS: ${n(
+          label: `*Rehab*\nn = ${n(this.nRehab(this.year))}, LOS: ${n1(
             this.params.nRehabLOS.val
           )}`,
           level: 3,
