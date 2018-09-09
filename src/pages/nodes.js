@@ -21,7 +21,7 @@ export default {
         {
           id: 'diversions',
           label: '*Diversions*\nn = ' +
-            n(this.getDiversions(this.params.mDiversions.val, this.year)),
+            n(this.getDiversions(this.year)),
           level: 0,
           group: 'start'
         },

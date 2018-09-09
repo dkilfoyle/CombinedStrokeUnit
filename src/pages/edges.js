@@ -17,7 +17,7 @@ export default {
       {
         from: 'diversions',
         to: 'pastapos',
-        value: this.getDiversions(this.params.mDiversions.val, this.year)
+        value: this.getDiversions(this.year)
       },
       {
         from: 'adhbstroke',

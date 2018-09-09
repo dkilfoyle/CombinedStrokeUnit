@@ -1,12 +1,3 @@
-// const ivtParams = {
-//   diversionRate: {
-//     statusquo: 0.33, // first 12 months audit
-//     pragmatic: 0.33,
-//     expanded: 0.33,
-//     future: 0.40 // better public awareness
-//   }
-// }
-
 export default {
   data () {
     return {
@@ -42,10 +33,10 @@ export default {
       return Math.round(this.nDiversions(year) * this.params.pDiversionIVTOnly.val)
     },
     nIVT: function (year) {
-      return Math.round(this.nIVTDiversions(year) + this.nIVTADHB(year))
+      return this.nIVTDiversions(year) + this.nIVTADHB(year)
     },
     nIVTExternal: function (year) {
-      return Math.round(this.nIVTDiversions(year))
+      return this.nIVTDiversions(year)
     }
   }
 }

@@ -69,12 +69,21 @@
                 th 2022
                 th 2023
                 th 2024
+                th 2025
+                th 2026
+                th 2027
+                th 2028
+                th 2029
+                th 2030
             tbody
               tr
                 td <b>Patients</b>
               tr
                 td PSI
                 td(v-for="year in tableYears") {{ nPSI(year) }}
+              tr
+                td Diversions
+                td(v-for="year in tableYears") {{ nDiversions(year) }}
               tr
                 td Diversions
                 td(v-for="year in tableYears") {{ nDiversions(year) }}
@@ -88,11 +97,22 @@
                 td Rehab
                 td(v-for="year in tableYears") {{ nRehab(year) }}
               tr
-                td Discharges
-                td(v-for="year in tableYears") {{ nDischarge(year) }}
+                td WDHB
+                td(v-for="year in tableYears") {{ nWDHBUnder65(year) }}
+              tr
+                td <b>Acute Ward Discharges</b>
               tr
                 td Repatriations
-                td(v-for="year in tableYears") {{ nRepatriation(year) }}
+                td(v-for="year in tableYears") {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}
+              tr
+                td TIA
+                td(v-for="year in tableYears") {{ nADHBTIA(year) }}
+              tr
+                td Stroke
+                td(v-for="year in tableYears") {{ nADHBStroke(year) }}
+              tr
+                td Total
+                td(v-for="year in tableYears") {{ nDischarge(year) - nWDHBUnder65(year) }}
               tr
                 td <b>Bed Days</b>
               tr
@@ -125,9 +145,7 @@
 import MyLayout from 'components/MyLayout'
 import FlowChartViewer from 'components/FlowChartViewer'
 import CustomParamTable from './CustomParamTable'
-// import Params from './ISUParams'
 import params from './userParams'
-import paramFilters from './paramFilters'
 import fcNodes from './nodes'
 import fcEdges from './edges'
 import psimodels from './psimodels'
@@ -144,7 +162,6 @@ export default {
   },
   mixins: [
     params,
-    paramFilters,
     fcNodes,
     fcEdges,
     psimodels,
@@ -154,10 +171,25 @@ export default {
   ],
   data () {
     return {
-      tableYears: [2018, 2019, 2020, 2021, 2022, 2022, 2023],
+      tableYears: [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025,
+        2026,
+        2027,
+        2028,
+        2029,
+        2030
+      ],
       paramGroups: [
         {label: 'Populations', icon: 'people'},
-        {label: 'ED', icon: 'mdi-ambulance'},
+        {label: 'Prehospital', icon: 'mdi-ambulance'},
+        {label: 'ED', icon: 'mdi-hospital'},
         {label: 'Neuroradiology', icon: 'mdi-radioactive'},
         {label: 'HASU/ASU', icon: 'mdi-needle'},
         {label: 'Rehab', icon: 'favorite'},
@@ -181,10 +213,10 @@ export default {
       return Math.round(this.nADHBStroke(year) * this.params.pPASTAPos.val)
     },
     nPASTAPos: function (year) {
-      return Math.round(
+      return (
         this.nPASTAPosADHB(year) +
-          this.getDiversions(this.params.mDiversions.val, year) +
-          this.nPSITransfer(year)
+        this.getDiversions(year) +
+        this.nPSITransfer(year)
       )
     },
     nPSIIVT: function (year) {
@@ -194,17 +226,17 @@ export default {
       return this.nPSIExternal(year) + this.nIVTExternal(year)
     },
     nPSIIVTNegExternal: function (year) {
-      return Math.round(
-        this.getDiversions(this.params.mDiversions.val, year) -
-          this.nPSIDiversions(year) -
-          this.nIVTDiversions(year)
+      return (
+        this.getDiversions(year) -
+        this.nPSIDiversions(year) -
+        this.nIVTDiversions(year)
       )
     },
     nPSIIVTNegADHB: function (year) {
-      return Math.round(
+      return (
         this.nPASTAPos(year) -
-          this.nPSIIVT(year) -
-          this.nPSIIVTNegExternal(year)
+        this.nPSIIVT(year) -
+        this.nPSIIVTNegExternal(year)
       )
     },
     nPASTANeg: function (year) {
@@ -219,7 +251,7 @@ export default {
       )
     },
     nASU: function (year) {
-      return Math.round(this.nASUStroke(year) + this.nASUTIA(year))
+      return this.nASUStroke(year) + this.nASUTIA(year)
     },
     nASUStroke: function (year) {
       return Math.round(
@@ -230,12 +262,10 @@ export default {
       )
     },
     nASUTIA: function (year) {
-      return Math.round(this.nADHBTIA(year)) // * this.params.pTIAAdmitted.val)
+      return this.nADHBTIA(year)
     },
     nRepatriation: function (year) {
-      return Math.round(
-        this.nPSIIVTNegExternal(year) + this.nPSIIVTExternal(year)
-      )
+      return this.nPSIIVTNegExternal(year) + this.nPSIIVTExternal(year)
     },
     nRehab: function (year) {
       return Math.round(
@@ -243,12 +273,13 @@ export default {
       )
     },
     nDischarge: function (year) {
-      return Math.round(
-        this.nASUStroke(year) + this.nASUTIA(year) + this.nWDHBUnder65(year)
+      return (
+        this.nPSIIVTExternal(year) +
+        this.nADHBStroke(year) +
+        this.nADHBTIA(year) +
+        this.nWDHBUnder65(year)
       )
     },
-
-    // =========================================================================
 
     nHASUBedDays: function (year) {
       return Math.round(this.nHASU(year) * this.params.nHASULOS.val)
