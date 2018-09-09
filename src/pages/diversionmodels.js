@@ -83,19 +83,15 @@ export default {
         diversionParams.mimics
     },
     getDiversions: function (year) {
+      // diversion models change abruptly based on policy
       let interpolatedCriteria = 0
       if (year > this.params.yDiversionsFutureStart.val) {
         interpolatedCriteria = this.pDiversionCriteria('future')
       } else if (year > this.params.yDiversionsExpandedStart.val) {
-        // interpolate expanded to future
-        const yeardiff = year - this.params.yDiversionsExpandedStart.val
-        const criteriadiff = this.pDiversionCriteria('future') - this.pDiversionCriteria('expanded')
-        interpolatedCriteria = this.pDiversionCriteria('expanded') + criteriadiff * yeardiff / (this.params.yDiversionsFutureStart.val - this.params.yDiversionsExpandedStart.val)
+        interpolatedCriteria = this.pDiversionCriteria('expanded')
       } else {
         // interpolate pragmatic to expanded
-        const yeardiff = year - 2018
-        const criteriadiff = this.pDiversionCriteria('expanded') - this.pDiversionCriteria('pragmatic')
-        interpolatedCriteria = this.pDiversionCriteria('pragmatic') + criteriadiff * yeardiff / (this.params.yDiversionsExpandedStart.val - 2018)
+        interpolatedCriteria = this.pDiversionCriteria('pragmatic')
       }
       return Math.round(
         this.getAllAdultStrokeByRegion('MetroNonADHB', year, this.params.popGrowth.val) * interpolatedCriteria

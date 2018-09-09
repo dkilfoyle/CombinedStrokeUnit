@@ -64,6 +64,7 @@ export default {
     },
     getPSIByRegion: function (region, year) {
       // N_psi = N_ischemic * elibility * availability
+      // psi models change gradually based mostly on evolution in availability and small steps in eligibility
       let interpolatedCriteria = 0
       if (year > this.params.yPSIFutureStart.val) {
         interpolatedCriteria = this.pPSICriteria(region, 'future')
