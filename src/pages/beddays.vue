@@ -24,9 +24,10 @@
         q-list.q-mt-lg
           q-list-header Settings
           q-item-separator
-          q-collapsible(group="settings" label="Presets" icon="settings" separator)
-            q-field(label="Parameter Presets").q-mb-lg
-              q-select(v-model="paramPreset" :options="paramPresetOptions")
+          //- q-collapsible(group="settings" label="Models" icon="settings" separator)
+            //- q-field(label="Model Parameters").q-mb-lg
+            //-   q-select(v-model="showmodel" :options="allmodels")
+
           q-collapsible(group="Flowchart" opened label="Flowchart" icon="mdi-sitemap" separator)
             .row.justify-center
               q-option-group(inline v-model="year" :options=`[
@@ -85,9 +86,6 @@
                 td Diversions
                 td(v-for="year in tableYears") {{ nDiversions(year) }}
               tr
-                td Diversions
-                td(v-for="year in tableYears") {{ nDiversions(year) }}
-              tr
                 td HASU
                 td(v-for="year in tableYears") {{ nHASU(year) }}
               tr
@@ -139,6 +137,67 @@
                 td Total
                 td(v-for="year in tableYears") {{ nTotalBeds(year) }}
 
+      div(slot="models")
+        .row.q-mt-lg.justify-center
+          div(style="width:800px; max-width: 90vw;")
+            .row.q-mt-lg
+              q-card(style="width:800px; max-width: 90vw;")
+                q-card-title PSI
+                q-card-separator
+                q-card-main
+                  p Rates are proportion of ischemic stroke.<br>Eligibility measures patient factors such as large vs small vessel occlusion, stroke duration.<br>Availability measures external factors such as distance from hospital, hospital resources including advanced CT<br>Diversion rate is the proportion of diversions that receive a PSI
+                  .row.justify-center.q-mt-lg(style="overflow:auto")
+                    table.q-table-old
+                      thead
+                        tr
+                          th PSI
+                          th Eligibility
+                          th Availability
+                          th DiversionRate
+                      tbody
+                        tr
+                          td <em>Metro</em>
+                        tr(v-for="model in ['pragmatic', 'expanded', 'future']")
+                          td {{ model }}
+                          td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
+                          td(data-th="Availability") {{ psiParams.availability.Metro[model] }}
+                          td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
+                        tr
+                          td <em>NonMetro</em>
+                        tr(v-for="model in ['pragmatic', 'expanded', 'future']")
+                          td {{ model }}
+                          td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
+                          td(data-th="Availability") {{ psiParams.availability.NonMetro[model] }}
+                          td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
+            .row.q-mt-lg
+              q-card(style="width:800px; max-width: 90vw;")
+                q-card-title Diversions
+                q-card-separator
+                q-card-main
+                  p Rates are proportion of all stroke presentation.<br>Acuity measures the accepted duration of stroke symptoms (4, 6, 12h).<br>OpHours measures the proportion of the day that diversions are active (afterhours vs 24h).<br>Deficit measures the required clinical deficit (LAMS etc).<br>Mimics is 1.0 + ratio of mimics to stroke.
+                  .row.justify-center(style="overflow:auto")
+                    table.q-table-old
+                      thead
+                        tr
+                          th Diversion
+                          th Acuity
+                          th OpHours
+                          th Deficit
+                          th Baseline
+                          th Mimics
+                      tbody
+                        tr(v-for="model in ['pragmatic', 'expanded', 'future']")
+                          td {{ model }}
+                          td(data-th="Acuity") {{ diversionParams.acuity[model] }}
+                          td(data-th="OpHours") {{ diversionParams.hours[model] }}
+                          td(data-th="Deficit") {{ diversionParams.deficit }}
+                          td(data-th="Baseline") {{ diversionParams.baselinefunction }}
+                          td(data-th="Mimics") {{ diversionParams.mimics }}
+
+      div(slot="export")
+        | Year, StrokeNoRehab, StrokeWithRehab, TIA, Repatriations, WDHBRehab<br>
+        span(v-for="year in tableYears") {{ year }}, {{ nADHBStroke(year) - nRehab(year) }}, {{ nRehab(year) }}, {{ nADHBTIA(year) }}, {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}, {{ nWDHBUnder65(year) }} <br>
+
 </template>
 
 <script>
@@ -152,6 +211,7 @@ import psimodels from './psimodels'
 import diversionmodels from './diversionmodels'
 import ivtmodels from './ivtmodels'
 import populationmodels from './populationmodels'
+import bedmodels from './bedmodels'
 
 export default {
   name: 'beddays',
@@ -167,7 +227,8 @@ export default {
     psimodels,
     diversionmodels,
     ivtmodels,
-    populationmodels
+    populationmodels,
+    bedmodels
   ],
   data () {
     return {
@@ -195,8 +256,12 @@ export default {
         {label: 'Rehab', icon: 'favorite'},
         {label: 'Beds', icon: 'mdi-hotel'}
       ],
-      paramPreset: 'Defaults',
-      paramPresetOptions: [{value: 'Defaults', label: 'Defaults'}],
+      showmodel: 'pragmatic',
+      allmodels: [
+        {value: 'pragmatic', label: 'Pragmatic'},
+        {value: 'expanded', label: 'Expanded'},
+        {value: 'future', label: 'Future'}
+      ],
       year: 2018
     }
   },
@@ -244,33 +309,8 @@ export default {
         this.nADHBStroke(year) * (1.0 - this.params.pPASTAPos.val)
       )
     },
-    nHASU: function (year) {
-      return Math.round(
-        this.nPSIIVTNegADHB(year) * this.params.pPSIIVTNegHASU.val +
-          this.nPSIIVT(year)
-      )
-    },
-    nASU: function (year) {
-      return this.nASUStroke(year) + this.nASUTIA(year)
-    },
-    nASUStroke: function (year) {
-      return Math.round(
-        this.nPASTANeg(year) +
-          this.nPSIIVTNegADHB(year) * (1.0 - this.params.pPSIIVTNegHASU.val) +
-          this.nHASU(year) -
-          this.nPSIIVTExternal(year)
-      )
-    },
-    nASUTIA: function (year) {
-      return this.nADHBTIA(year)
-    },
     nRepatriation: function (year) {
       return this.nPSIIVTNegExternal(year) + this.nPSIIVTExternal(year)
-    },
-    nRehab: function (year) {
-      return Math.round(
-        this.nASUStroke(year) * this.params.pRehab.val + this.nWDHBUnder65(year)
-      )
     },
     nDischarge: function (year) {
       return (
@@ -279,38 +319,6 @@ export default {
         this.nADHBTIA(year) +
         this.nWDHBUnder65(year)
       )
-    },
-
-    nHASUBedDays: function (year) {
-      return Math.round(this.nHASU(year) * this.params.nHASULOS.val)
-    },
-    nASUBedDays: function (year) {
-      return Math.round(
-        this.nASUStroke(year) * this.params.nASULOSStroke.val +
-          this.nASUTIA(year) * this.params.nASULOSTIA.val
-      )
-    },
-    nRehabBedDays: function (year) {
-      return Math.round(this.nRehab(year) * this.params.nRehabLOS.val)
-    },
-
-    nHASUBeds: function (year) {
-      return Math.ceil(
-        this.nHASUBedDays(year) * 1 / this.params.pHASUOccupancy.val / 365
-      )
-    },
-    nASUBeds: function (year) {
-      return Math.ceil(
-        this.nASUBedDays(year) * 1 / this.params.pASUOccupancy.val / 365
-      )
-    },
-    nRehabBeds: function (year) {
-      return Math.ceil(
-        this.nRehabBedDays(year) * 1 / this.params.pASUOccupancy.val / 365.0
-      )
-    },
-    nTotalBeds: function (year) {
-      return this.nHASUBeds(year) + this.nASUBeds(year) + this.nRehabBeds(year)
     },
     resetDefaults: function () {
       var self = this

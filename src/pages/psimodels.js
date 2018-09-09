@@ -3,7 +3,7 @@ const psiParams = {
     statusquo: 0.09,
     pragmatic: 0.11,
     expanded: 0.14,
-    future: 0.19
+    future: 0.17
   },
   availability: {
     Metro: {
@@ -22,7 +22,7 @@ const psiParams = {
       statusquo: 0.13,
       pragmatic: 0.25,
       expanded: 0.6,
-      future: 0.75
+      future: 0.7
     }
   },
   diversionRate: {
@@ -36,6 +36,7 @@ const psiParams = {
 export default {
   data () {
     return {
+      psiParams,
       psiUserParams: {
         yPSIExpandedStart: {
           name: 'yPSIExpandedStart',
