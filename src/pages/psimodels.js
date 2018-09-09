@@ -28,8 +28,8 @@ const psiParams = {
   diversionRate: {
     statusquo: 0.22, // first 12 months audit
     pragmatic: 0.22,
-    expanded: 0.28, // expanded timeframe
-    future: 0.33 // increase eligibility distal clots etc
+    expanded: 0.24, // expanded timeframe
+    future: 0.26 // increase eligibility distal clots etc
   }
 }
 
@@ -80,6 +80,7 @@ export default {
         const criteriadiff = this.pPSICriteria(region, 'expanded') - this.pPSICriteria(region, 'pragmatic')
         interpolatedCriteria = this.pPSICriteria(region, 'pragmatic') + criteriadiff * yeardiff / (this.params.yPSIExpandedStart.val - 2018)
       }
+      console.assert(interpolatedCriteria <= 1.0, interpolatedCriteria)
       return Math.round(
         this.getIschemicAdultStrokeByRegion(region, year, this.params.popGrowth.val) * interpolatedCriteria
       )
@@ -118,7 +119,9 @@ export default {
     },
     nPSIADHB: function (year) {
       return this.nPSI(year) - this.nPSIExternal(year)
+    },
+    percentPSI: function (region, year) {
+      return Math.round(this.getPSIByRegion(region, year) / this.getIschemicAdultStrokeByRegion(region, year, this.params.popGrowth.val) * 100, 0)
     }
-
   }
 }

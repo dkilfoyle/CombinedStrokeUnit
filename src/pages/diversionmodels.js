@@ -67,12 +67,16 @@ export default {
         // interpolate pragmatic to expanded
         interpolatedCriteria = this.pDiversionCriteria('pragmatic')
       }
+      console.assert(interpolatedCriteria <= 1.0, interpolatedCriteria)
       return Math.round(
         this.getAllAdultStrokeByRegion('MetroNonADHB', year, this.params.popGrowth.val) * interpolatedCriteria
       )
     },
     nDiversions: function (year) {
       return this.getDiversions(year)
+    },
+    percentDiversions: function (year) {
+      return Math.round(this.nDiversions(year) / this.getAllAdultStrokeByRegion('MetroNonADHB', year, this.params.popGrowth.val) * 100, 0)
     }
   }
 }

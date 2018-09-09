@@ -111,6 +111,19 @@
               tr
                 td Total
                 td(v-for="year in tableYears") {{ nDischarge(year) - nWDHBUnder65(year) }}
+
+              tr
+                td <b>Intervention Rates</b>
+              tr
+                td PSI Metro
+                td(v-for="year in tableYears") {{ percentPSI('Metro', year) }}
+              tr
+                td PSI Non-Metro
+                td(v-for="year in tableYears") {{ percentPSI('NonMetro', year) }}
+              tr
+                td Diversions
+                td(v-for="year in tableYears") {{ percentDiversions(year) }}
+
               tr
                 td <b>Bed Days</b>
               tr
@@ -145,25 +158,25 @@
                 q-card-title PSI
                 q-card-separator
                 q-card-main
-                  p Rates are proportion of ischemic stroke.<br>Eligibility measures patient factors such as large vs small vessel occlusion, stroke duration.<br>Availability measures external factors such as distance from hospital, hospital resources including advanced CT<br>Diversion rate is the proportion of diversions that receive a PSI
+                  p Rates are proportion of ischemic stroke.<br>Eligibility measures patient factors such as large vs small vessel occlusion, stroke duration.<br>Availability measures external factors such as distance from hospital, hospital resources including advanced CT<br>Diversion rate is the proportion of diversions that receive a PSI. This will increase only slightly as increasing diversion strategies target absolute numbers not proportion.
                   .row.justify-center.q-mt-lg(style="overflow:auto")
                     table.q-table-old
                       thead
                         tr
-                          th PSI
+                          th
                           th Eligibility
                           th Availability
                           th DiversionRate
                       tbody
                         tr
-                          td <em>Metro</em>
+                          td <b>Metro</b>
                         tr(v-for="model in ['pragmatic', 'expanded', 'future']")
                           td {{ model }}
                           td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
                           td(data-th="Availability") {{ psiParams.availability.Metro[model] }}
                           td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
                         tr
-                          td <em>NonMetro</em>
+                          td <b>NonMetro</b>
                         tr(v-for="model in ['pragmatic', 'expanded', 'future']")
                           td {{ model }}
                           td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
@@ -179,7 +192,7 @@
                     table.q-table-old
                       thead
                         tr
-                          th Diversion
+                          th
                           th Acuity
                           th OpHours
                           th Deficit
