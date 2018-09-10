@@ -6,7 +6,7 @@
         //-   q-icon(name="menu")
 
         q-toolbar-title ADHB ISU Bed Modelling
-          div(slot="subtitle") ADHB Integrated Stroke Unit Bed Modelling and Simulation E-Tool
+          div(slot="subtitle") ADHB Integrated Stroke Unit Bed Modelling and Simulation E-Tool (v{{ version }})
 
     //- q-layout-drawer(v-model="leftDrawerOpen" content-class="bg-grey-2")
     //-   q-list(no-border link inset-delimiter)
@@ -27,12 +27,14 @@
 
 <script>
 require('vue-animate/dist/vue-animate.min.css')
+import {version} from './version'
 
 export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: true
+      leftDrawerOpen: true,
+      version
     }
   },
   computed: {},
