@@ -57,98 +57,98 @@
       div(slot="graph")
         flow-chart-viewer(title="PSI" :flowchartData="{nodes, edges}")
 
-      div(slot="table" style="overflow:scroll;")
-        .row.justify-center
-          table.q-table-old
-            thead
-              tr
-                th.headcol
-                th 2018
-                th 2019
-                th 2020
-                th 2021
-                th 2022
-                th 2023
-                th 2024
-                th 2025
-                th 2026
-                th 2027
-                th 2028
-                th 2029
-                th 2030
-            tbody
-              tr
-                td <b>Patients</b>
-              tr
-                td PSI
-                td(v-for="year in tableYears") {{ nPSI(year) }}
-              tr
-                td Diversions
-                td(v-for="year in tableYears") {{ nDiversions(year) }}
-              tr
-                td HASU
-                td(v-for="year in tableYears") {{ nHASU(year) }}
-              tr
-                td ASU
-                td(v-for="year in tableYears") {{ nASU(year) }}
-              tr
-                td Rehab
-                td(v-for="year in tableYears") {{ nRehab(year) }}
-              tr
-                td WDHB
-                td(v-for="year in tableYears") {{ nWDHBUnder65(year) }}
-              tr
-                td <b>Acute Ward Discharges</b>
-              tr
-                td Repatriations
-                td(v-for="year in tableYears") {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}
-              tr
-                td TIA
-                td(v-for="year in tableYears") {{ nADHBTIA(year) }}
-              tr
-                td Stroke
-                td(v-for="year in tableYears") {{ nADHBStroke(year) }}
-              tr
-                td Total
-                td(v-for="year in tableYears") {{ nDischarge(year) - nWDHBUnder65(year) }}
+      div(slot="plots")
+        .row.q-mt-lg.justify-center
+          div(style="width:800px; max-width: 90vw;")
+            .row.q-mt-lg
+              highcharts(:options="patientsChartData")
+            .row.q-mt-lg
+              highcharts(:options="dischargesChartData")
+            .row.q-mt-lg
+              highcharts(:options="beddaysChartData")
 
-              tr
-                td <b>Intervention Rates</b>
-              tr
-                td PSI Metro
-                td(v-for="year in tableYears") {{ percentPSI('Metro', year) }}
-              tr
-                td PSI Non-Metro
-                td(v-for="year in tableYears") {{ percentPSI('NonMetro', year) }}
-              tr
-                td Diversions
-                td(v-for="year in tableYears") {{ percentDiversions(year) }}
+      div(slot="table")
+        table.q-table-old
+          thead
+            tr
+              th
+              th(v-for="year in tableYears") {{ year }}
+          tbody
+            tr
+              td <b>Patients</b>
+            tr
+              td PSI
+              td(v-for="year in tableYears") {{ nPSI(year) }}
+            tr
+              td Diversions
+              td(v-for="year in tableYears") {{ nDiversions(year) }}
+            tr
+              td HASU
+              td(v-for="year in tableYears") {{ nHASU(year) }}
+            tr
+              td ASU
+              td(v-for="year in tableYears") {{ nASU(year) }}
+            tr
+              td Rehab
+              td(v-for="year in tableYears") {{ nRehab(year) }}
+            tr
+              td WDHB
+              td(v-for="year in tableYears") {{ nWDHBUnder65(year) }}
+            tr
+              td <b>Acute Ward Discharges</b>
+            tr
+              td Repatriations
+              td(v-for="year in tableYears") {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}
+            tr
+              td TIA
+              td(v-for="year in tableYears") {{ nADHBTIA(year) }}
+            tr
+              td Stroke no Rehab
+              td(v-for="year in tableYears") {{ nADHBStroke(year) - nRehab(year) }}
+            tr
+              td Stroke with Rehab
+              td(v-for="year in tableYears") {{ nRehab(year) }}
+            tr
+              td Total
+              td(v-for="year in tableYears") {{ nDischarge(year) - nWDHBUnder65(year) }}
 
-              tr
-                td <b>Bed Days</b>
-              tr
-                td HASU
-                td(v-for="year in tableYears") {{ nHASUBedDays(year) }}
-              tr
-                td ASU
-                td(v-for="year in tableYears") {{ nASUBedDays(year) }}
-              tr
-                td Rehab
-                td(v-for="year in tableYears") {{ nRehabBedDays(year) }}
-              tr
-                td <b>Beds @ target occupancy</b>
-              tr
-                td HASU
-                td(v-for="year in tableYears") {{ nHASUBeds(year) }}
-              tr
-                td ASU
-                td(v-for="year in tableYears") {{ nASUBeds(year) }}
-              tr
-                td Rehab
-                td(v-for="year in tableYears") {{ nRehabBeds(year) }}
-              tr
-                td Total
-                td(v-for="year in tableYears") {{ nTotalBeds(year) }}
+            tr
+              td <b>Intervention Rates</b>
+            tr
+              td PSI Metro
+              td(v-for="year in tableYears") {{ percentPSI('Metro', year) }}
+            tr
+              td PSI Non-Metro
+              td(v-for="year in tableYears") {{ percentPSI('NonMetro', year) }}
+            tr
+              td Diversions
+              td(v-for="year in tableYears") {{ percentDiversions(year) }}
+
+            tr
+              td <b>Bed Days</b>
+            tr
+              td HASU
+              td(v-for="year in tableYears") {{ nHASUBedDays(year) }}
+            tr
+              td ASU
+              td(v-for="year in tableYears") {{ nASUBedDays(year) }}
+            tr
+              td Rehab
+              td(v-for="year in tableYears") {{ nRehabBedDays(year) }}
+            tr
+              td <b>Beds @ target occupancy</b>
+            tr
+              td HASU
+              td(v-for="year in tableYears") {{ nHASUBeds(year) }}
+            tr
+              td ASU
+              td(v-for="year in tableYears") {{ nASUBeds(year) }}
+            tr
+              td Rehab
+              td(v-for="year in tableYears") {{ nRehabBeds(year) }}
+            tr
+              td Total
+              td(v-for="year in tableYears") {{ nTotalBeds(year) }}
 
       div(slot="models")
         .row.q-mt-lg.justify-center
@@ -182,7 +182,7 @@
                           td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
                           td(data-th="Availability") {{ psiParams.availability.NonMetro[model] }}
                           td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
-            .row.q-mt-lg
+            .row.q-mb-lg.q-mt-lg
               q-card(style="width:800px; max-width: 90vw;")
                 q-card-title Diversions
                 q-card-separator
@@ -208,8 +208,8 @@
                           td(data-th="Mimics") {{ diversionParams.mimics }}
 
       div(slot="export")
-        | Year, StrokeNoRehab, StrokeWithRehab, TIA, Repatriations, WDHBRehab<br>
-        span(v-for="year in tableYears") {{ year }}, {{ nADHBStroke(year) - nRehab(year) }}, {{ nRehab(year) }}, {{ nADHBTIA(year) }}, {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}, {{ nWDHBUnder65(year) }} <br>
+        | Year, StrokeNoRehab, StrokeWithRehab, TIA, Repatriations, WDHBRehab, HASUBedDays, ASUBedDays, RehabBedDays<br>
+        span(v-for="year in tableYears") {{ year }}, {{ nADHBStroke(year) - nRehab(year) }}, {{ nRehab(year) }}, {{ nADHBTIA(year) }}, {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}, {{ nWDHBUnder65(year) }}, {{ nHASUBedDays(year) }}, {{ nASUBedDays(year) }}, {{ nRehabBedDays(year) }} <br>
 
 </template>
 
@@ -225,13 +225,15 @@ import diversionmodels from './diversionmodels'
 import ivtmodels from './ivtmodels'
 import populationmodels from './populationmodels'
 import bedmodels from './bedmodels'
+import {Chart} from 'highcharts-vue'
 
 export default {
   name: 'beddays',
   components: {
     CustomParamTable,
     FlowChartViewer,
-    MyLayout
+    MyLayout,
+    highcharts: Chart
   },
   mixins: [
     params,
@@ -279,6 +281,77 @@ export default {
     }
   },
   computed: {
+    patientsChartData: function () {
+      return {
+        title: {text: 'Patients'},
+        xAxis: {categories: this.tableYears},
+        yAxis: {title: {text: 'Patients per year'}},
+        series: [
+          {name: 'PSI', data: this.tableYears.map(year => this.nPSI(year))},
+          {
+            name: 'Diversions',
+            data: this.tableYears.map(year => this.nDiversions(year))
+          }
+        ]
+      }
+    },
+    beddaysChartData: function () {
+      return {
+        title: {text: 'Bed Days'},
+        xAxis: {categories: this.tableYears},
+        yAxis: {title: {text: 'Bed Days per Year'}},
+        series: [
+          {
+            name: 'HASU',
+            data: this.tableYears.map(year => this.nHASUBedDays(year))
+          },
+          {
+            name: 'ASU',
+            data: this.tableYears.map(year => this.nASUBedDays(year))
+          },
+          {
+            name: 'Rehab',
+            data: this.tableYears.map(year => this.nRehabBedDays(year))
+          },
+          {
+            name: 'Total',
+            data: this.tableYears.map(
+              year =>
+                this.nHASUBedDays(year) +
+                this.nASUBedDays(year) +
+                this.nRehabBedDays(year)
+            )
+          }
+        ]
+      }
+    },
+    dischargesChartData: function () {
+      return {
+        title: {text: 'Discharges'},
+        xAxis: {categories: this.tableYears},
+        yAxis: {title: {text: 'Patients per year'}},
+        series: [
+          {
+            name: 'Repatriations',
+            data: this.tableYears.map(year => this.nRepatriation(year))
+          },
+          {
+            name: 'TIA',
+            data: this.tableYears.map(year => this.nADHBTIA(year))
+          },
+          {
+            name: 'Stroke no Rehab',
+            data: this.tableYears.map(
+              year => this.nADHBStroke(year) - this.nRehab(year)
+            )
+          },
+          {
+            name: 'Stroke with Rehab',
+            data: this.tableYears.map(year => this.nRehab(year))
+          }
+        ]
+      }
+    },
     flowchartData: function () {
       return {
         nodes: fcNodes,
