@@ -30,7 +30,7 @@ export default {
         },
         nASULOSStroke: {
           name: 'nASULOSStroke',
-          val: 4.5,
+          val: 4.9,
           default: 4.5,
           min: 1,
           max: 20,
@@ -60,25 +60,28 @@ export default {
           type: 'percent',
           group: 'Beds',
           label: '% HASU Bed Occupancy',
-          help: 'Target % Occupancy of HASU Beds'
+          helper: 'Target % Occupancy of HASU Beds'
         },
         pASUOccupancy: {
           name: 'pASUOccupancy',
-          val: 0.9,
-          default: 0.9,
+          val: 0.85,
+          default: 0.85,
           type: 'percent',
           group: 'Beds',
           label: '% ASU Bed Occupancy',
-          help: 'Target % Occupancy of HASU Beds'
+          helper: 'Target % Occupancy of HASU Beds'
         }
       }
     }
   },
   methods: {
-    nRehab: function (year) {
+    nRehabNeuroStroke: function (year) {
       return Math.round(
-        this.nASUStroke(year) * this.params.pRehab.val + this.nWDHBUnder65(year)
+        this.nASUStroke(year) * this.params.pRehab.val
       )
+    },
+    nRehabTotal: function (year) {
+      return this.nRehabNeuroStroke(year) + this.nRehabWDHBUnder65(year) + this.nRehabOtherStroke(year)
     },
     nHASU: function (year) {
       return Math.round(
@@ -111,7 +114,7 @@ export default {
       )
     },
     nRehabBedDays: function (year) {
-      return Math.round(this.nRehab(year) * this.params.nRehabLOS.val)
+      return Math.round(this.nRehabTotal(year) * this.params.nRehabLOS.val)
     },
 
     nHASUBeds: function (year) {

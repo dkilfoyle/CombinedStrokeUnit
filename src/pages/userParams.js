@@ -41,8 +41,8 @@ export default {
         },
         pPSIIVTNegHASU: {
           name: 'pPSINegHASU',
-          val: 0.5,
-          default: 0.5,
+          val: 0.6,
+          default: 0.6,
           type: 'percent',
           group: 'ED',
           label: '% PSI Neg to HASU',

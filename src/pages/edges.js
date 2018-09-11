@@ -40,9 +40,9 @@ export default {
         //   to: 'tiaed'
         // },
       {
-        from: 'wdhbstroke',
+        from: 'otherstroke',
         to: 'rehab',
-        value: this.nWDHBUnder65(this.year)
+        value: this.nRehabWDHBUnder65(this.year) + this.nRehabOtherStroke(this.year)
       },
         // ======================== Inside ED
       {
@@ -110,7 +110,12 @@ export default {
       {
         from: 'hasu',
         to: 'repat',
-        label: n(this.nPSIIVTExternal(this.year)) + ' PSI/IVT',
+        dashes: true,
+        smooth: {
+          enabled: true,
+          type: 'curvedCCW'
+        },
+        label: n(this.nPSIIVTExternal(this.year)) + ' PSI/Diversion\nRepatriation',
         value: this.nPSIIVTExternal(this.year)
       },
       {
@@ -122,8 +127,20 @@ export default {
       {
         from: 'asu',
         to: 'rehab',
-        label: p(this.params.pRehab.val) + ' Stroke',
-        value: this.nASUStroke(this.year) * this.params.pRehab.val
+        label: p(this.params.pRehab.val) + ' Stroke\n n = ' + this.nRehabNeuroStroke(this.year),
+        value: this.nRehabNeuroStroke(this.year)
+      },
+      {
+        from: 'hasu',
+        to: 'discharge',
+        dashes: true,
+        label: n(this.nPSIIVTExternal(this.year)) + ' PSI/Diversion\nRepatriation',
+        value: this.nPSIIVTExternal(this.year),
+
+        smooth: {
+          enabled: true,
+          type: 'curvedCW'
+        }
       },
       {
         from: 'asu',
@@ -138,7 +155,7 @@ export default {
       {
         from: 'rehab',
         to: 'discharge',
-        value: this.nRehab(this.year)
+        value: this.nRehabTotal(this.year)
       }
       ]
     }

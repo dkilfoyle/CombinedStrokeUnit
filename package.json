@@ -1,6 +1,6 @@
 {
   "name": "isu",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Quasar Framework app",
   "productName": "ISU Estimator",
   "cordovaId": "org.cordova.quasar.app",
@@ -9,8 +9,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
-    "deployold": "gh-pages -d dist/spa-mat",
-    "deploy": "push-dir --dir=dist/spa-mat --remote=gh-pages --branch=master",
+    "deploy": "gh-pages -d dist/spa-mat",
     "genversion": "genversion --es6 src/layouts/version.js"
   },
   "dependencies": {

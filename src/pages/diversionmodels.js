@@ -17,7 +17,7 @@ const diversionParams = {
     expanded: 0.61,
     future: 1.0 // all hours
   },
-  deficit: 0.22, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
+  deficit: 0.25, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
   baselinefunction: 0.79, // Basedline adequate function from Quinn et al
   mimics: 1.2 // 20% mimics
 }
@@ -33,7 +33,7 @@ export default {
           default: 2021,
           group: 'Prehospital',
           label: 'Diversion Expanded Year',
-          helper: 'Year that diversions reach eExpanded model',
+          helper: 'Year that diversions reach Expanded model (symptom duration 6h)',
           type: 'number'
         },
         yDiversionsFutureStart: {
@@ -42,7 +42,7 @@ export default {
           default: 2025,
           group: 'Prehospital',
           label: 'Diversion Future Year',
-          helper: 'Year that diversions reach Future model',
+          helper: 'Year that diversions reach Future model (duration 12h, all day)',
           type: 'number'
         }
       }

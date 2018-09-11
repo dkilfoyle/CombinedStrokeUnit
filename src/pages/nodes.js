@@ -46,8 +46,8 @@ export default {
           group: 'start'
         },
         {
-          id: 'wdhbstroke',
-          label: `*WDHB <65y\nn = ${n(this.nWDHBUnder65(this.year))}`,
+          id: 'otherstroke',
+          label: `*WDHB <65y\nn = ${n(this.nRehabWDHBUnder65(this.year))}\n*Other Specialty\nn = ${n(this.nRehabOtherStroke(this.year))}`,
           level: 0,
           group: 'start'
         },
@@ -145,9 +145,14 @@ export default {
           level: 3,
           group: 'norm'
         },
+        // {
+        //   id: 'blank4',
+        //   level: 3,
+        //   hidden: true
+        // },
         {
           id: 'rehab',
-          label: `*Rehab*\nn = ${n(this.nRehab(this.year))}, LOS: ${n1(
+          label: `*Rehab*\nn = ${n(this.nRehabTotal(this.year))}, LOS: ${n1(
             this.params.nRehabLOS.val
           )}`,
           level: 3,
@@ -156,8 +161,11 @@ export default {
         // ================== discharge
         {
           id: 'discharge',
-          label: `*Discharge*\nn = ${n(this.nDischarge(this.year))}`,
+          label: `*ISU Discharges*\nn = ${n(this.nISUDischarge(this.year))}`,
           level: 4,
+          x: 300,
+          y: 500,
+          physics: false,
           group: 'end'
         }
       ]

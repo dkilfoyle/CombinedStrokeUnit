@@ -59,14 +59,23 @@ export default {
           label: '# ADHB TIA',
           helper: 'Number of TIA admissions (LOS>0d) in 2017'
         },
-        nWDHBUnder65: {
-          name: 'nWDHBUnder65',
+        nRehabWDHBUnder65: {
+          name: 'nRehabWDHBUnder65',
           val: 30,
           default: 30,
           type: 'number',
           group: 'Populations',
           label: '# WDHB <65 Stroke Rehab',
           helper: 'Number of WDHB area <65y stroke rehab patients'
+        },
+        nRehabOtherStroke: {
+          name: 'nRehabOtherStroke',
+          val: 21 + 15 + 3 + 1,
+          default: 21 + 15 + 3 + 1,
+          type: 'number',
+          group: 'Populations',
+          label: '# Non-Neuro Stroke Rehab',
+          helper: 'Number of patients from other specialties (eg Gen Med) requiring stroke rehab'
         },
         popGrowth: {
           name: 'popGrowth',
@@ -134,9 +143,15 @@ export default {
         (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     },
-    nWDHBUnder65: function (year) {
+    nRehabWDHBUnder65: function (year) {
       return Math.round(
-        this.params.nWDHBUnder65.val *
+        this.params.nRehabWDHBUnder65.val *
+        (1.0 + this.params.popGrowth.val) ** (year - 2017)
+      )
+    },
+    nRehabOtherStroke: function (year) {
+      return Math.round(
+        this.params.nRehabOtherStroke.val *
         (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     }

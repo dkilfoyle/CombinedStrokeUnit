@@ -90,12 +90,9 @@
               td(v-for="year in tableYears") {{ nASU(year) }}
             tr
               td Rehab
-              td(v-for="year in tableYears") {{ nRehab(year) }}
+              td(v-for="year in tableYears") {{ nRehabTotal(year) }}
             tr
-              td WDHB
-              td(v-for="year in tableYears") {{ nWDHBUnder65(year) }}
-            tr
-              td <b>Acute Ward Discharges</b>
+              td <b>HASU/ASU Discharges</b>
             tr
               td Repatriations
               td(v-for="year in tableYears") {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}
@@ -104,16 +101,30 @@
               td(v-for="year in tableYears") {{ nADHBTIA(year) }}
             tr
               td Stroke no Rehab
-              td(v-for="year in tableYears") {{ nADHBStroke(year) - nRehab(year) }}
+              td(v-for="year in tableYears") {{ nASUStroke(year) - nRehabNeuroStroke(year) }}
             tr
               td Stroke with Rehab
-              td(v-for="year in tableYears") {{ nRehab(year) }}
+              td(v-for="year in tableYears") {{ nRehabNeuroStroke(year) }}
             tr
               td Total
-              td(v-for="year in tableYears") {{ nDischarge(year) - nWDHBUnder65(year) }}
+              td(v-for="year in tableYears") {{ nRepatriation(year) - nPSIIVTNegExternal(year) + nADHBTIA(year) +  nASUStroke(year) }}
+            tr
+              td <b>Rehab Discharges</b>
+            tr
+              td Neuro Stroke Rehab
+              td(v-for="year in tableYears") {{ nRehabNeuroStroke(year) }}
+            tr
+              td Other Specialty Stroke Rehab
+              td(v-for="year in tableYears") {{ nRehabOtherStroke(year) }}
+            tr
+              td WDHB Under 65 Stroke Rehab
+              td(v-for="year in tableYears") {{ nRehabWDHBUnder65(year) }}
+            tr
+              td Total
+              td(v-for="year in tableYears") {{ nRehabTotal(year) }}
 
             tr
-              td <b>Intervention Rates</b>
+              td <b>Intervention Rates %</b>
             tr
               td PSI Metro
               td(v-for="year in tableYears") {{ percentPSI('Metro', year) }}
@@ -209,7 +220,7 @@
 
       div(slot="export")
         | Year, StrokeNoRehab, StrokeWithRehab, TIA, Repatriations, WDHBRehab, HASUBedDays, ASUBedDays, RehabBedDays<br>
-        span(v-for="year in tableYears") {{ year }}, {{ nADHBStroke(year) - nRehab(year) }}, {{ nRehab(year) }}, {{ nADHBTIA(year) }}, {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}, {{ nWDHBUnder65(year) }}, {{ nHASUBedDays(year) }}, {{ nASUBedDays(year) }}, {{ nRehabBedDays(year) }} <br>
+        span(v-for="year in tableYears") {{ year }}, {{ nASUStroke(year) - nRehabNeuroStroke(year) }}, {{ nRehabNeuroStroke(year) }}, {{ nADHBTIA(year) }}, {{ nRepatriation(year) - nPSIIVTNegExternal(year) }}, {{ nRehabWDHBUnder65(year) }}, {{ nHASUBedDays(year) }}, {{ nASUBedDays(year) }}, {{ nRehabBedDays(year) }} <br>
 
 </template>
 
@@ -277,7 +288,7 @@ export default {
         {value: 'expanded', label: 'Expanded'},
         {value: 'future', label: 'Future'}
       ],
-      year: 2018
+      year: 2020
     }
   },
   computed: {
@@ -342,12 +353,12 @@ export default {
           {
             name: 'Stroke no Rehab',
             data: this.tableYears.map(
-              year => this.nADHBStroke(year) - this.nRehab(year)
+              year => this.nASUStroke(year) - this.nRehabNeuroStroke(year)
             )
           },
           {
             name: 'Stroke with Rehab',
-            data: this.tableYears.map(year => this.nRehab(year))
+            data: this.tableYears.map(year => this.nRehabNeuroStroke(year))
           }
         ]
       }
@@ -398,12 +409,13 @@ export default {
     nRepatriation: function (year) {
       return this.nPSIIVTNegExternal(year) + this.nPSIIVTExternal(year)
     },
-    nDischarge: function (year) {
+    nISUDischarge: function (year) {
       return (
         this.nPSIIVTExternal(year) +
         this.nADHBStroke(year) +
         this.nADHBTIA(year) +
-        this.nWDHBUnder65(year)
+        this.nRehabWDHBUnder65(year) +
+        this.nRehabOtherStroke(year)
       )
     },
     resetDefaults: function () {

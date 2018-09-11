@@ -58,7 +58,9 @@ export default {
             enabled: true,
             direction: 'LR',
             levelSeparation: 150,
-            nodeSpacing: 175
+            nodeSpacing: 175,
+            edgeMinimization: true,
+            blockShifting: true
           }
         },
         nodes: {
