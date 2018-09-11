@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
-    "deploy": "gh-pages -d dist/spa-mat",
+    "deployold": "gh-pages -d dist/spa-mat",
+    "deploy": "push-dir --dir=dist/spa-mat --remote=gh-pages --branch=master",
     "genversion": "genversion --es6 src/layouts/version.js"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "highcharts": "^6.1.2",
     "highcharts-vue": "^1.2.0",
     "numeral": "^2.0.6",
+    "push-dir": "^0.4.1",
     "vis": "^4.21.0",
     "vue-animate": "0.0.4"
   },
