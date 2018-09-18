@@ -55,6 +55,15 @@ export default {
           label: 'PSI Future Year',
           helper: 'Year that diversions reach Future model',
           type: 'number'
+        },
+        pPSIIVTNegHASU: {
+          name: 'pPSINegHASU',
+          val: 0.6,
+          default: 0.6,
+          type: 'percent',
+          group: 'ED',
+          label: '% PSI Neg to HASU',
+          help: '% PASTA +ve/PSI&IVT -ve admitted to HASU vs ASU'
         }
       }
     }

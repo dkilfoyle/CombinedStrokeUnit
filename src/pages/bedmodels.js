@@ -15,6 +15,16 @@ export default {
           helper: 'Average LOS in rehab bed',
           tip: 'ADT145 data for patients referred from stroke neuro in 2017.'
         },
+        pRehab: {
+          name: 'pRehab',
+          val: 0.24,
+          default: 0.24,
+          type: 'percent',
+          group: 'Rehab',
+          label: '% Rehab',
+          helper: '% of Stroke patients in ASU needing inpatient rehab',
+          tip: 'From ADT145 data for neuro stroke discharges'
+        },
         nHASULOS: {
           name: 'nHASULOS',
           val: 1.5,

@@ -6,7 +6,7 @@
           q-list-header ISU Parameters
           q-item-separator
 
-          q-collapsible(v-for="paramGroup in paramGroups" :key="paramGroup.label" group="parameters" :label="paramGroup.label" :icon="paramGroup.icon" separator)
+          q-collapsible(v-for="paramGroup in paramGroups" :key="paramGroup.label" :label="paramGroup.label" :icon="paramGroup.icon" separator)
             q-alert(v-if="paramGroup.label==='Populations'" type="info").q-mb-lg
               | Stroke and TIA numbers in 2017. These will be scaled up for annual population growth.
             q-field(v-for="param in Object.values(params).filter(p => p.group === paramGroup.label)" :key="param.name" :label="param.label" :helper="param | getHelper")
@@ -169,7 +169,7 @@
                 q-card-title PSI
                 q-card-separator
                 q-card-main
-                  p Rates are proportion of ischemic stroke.<br>Eligibility measures patient factors such as large vs small vessel occlusion, stroke duration.<br>Availability measures external factors such as distance from hospital, hospital resources including advanced CT<br>Diversion rate is the proportion of diversions that receive a PSI. This will increase only slightly as increasing diversion strategies target absolute numbers not proportion.
+                  p Rates are proportion of ischemic stroke.<br>Eligibility measures patient factors such as large vs small vessel occlusion, stroke duration.<br>Availability measures external factors such as distance from hospital, hospital resources including advanced CT<br>Diversion rate is the proportion of diversions that receive a PSI. This will increase only slightly as increasing diversion strategies target absolute numbers not proportion. Increasing diversions decreases the number of PSI transfers.
                   .row.justify-center.q-mt-lg(style="overflow:auto")
                     table.q-table-old
                       thead
@@ -192,7 +192,7 @@
                           td {{ model }}
                           td(data-th="Eligibility") {{ psiParams.eligibility[model] }}
                           td(data-th="Availability") {{ psiParams.availability.NonMetro[model] }}
-                          td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
+                          //- td(data-th="DiversionRate") {{ psiParams.diversionRate[model] }}
             .row.q-mb-lg.q-mt-lg
               q-card(style="width:800px; max-width: 90vw;")
                 q-card-title Diversions

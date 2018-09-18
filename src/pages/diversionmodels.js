@@ -17,7 +17,7 @@ const diversionParams = {
     expanded: 0.61,
     future: 1.0 // all hours
   },
-  deficit: 0.25, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
+  deficit: 0.44, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
   baselinefunction: 0.79, // Basedline adequate function from Quinn et al
   mimics: 1.2 // 20% mimics
 }
@@ -60,10 +60,13 @@ export default {
       // diversion models change abruptly based on policy
       let interpolatedCriteria = 0
       if (year > this.params.yDiversionsFutureStart.val) {
+        console.log('future')
         interpolatedCriteria = this.pDiversionCriteria('future')
       } else if (year > this.params.yDiversionsExpandedStart.val) {
+        console.log('expanded')
         interpolatedCriteria = this.pDiversionCriteria('expanded')
       } else {
+        console.log('pragmatic')
         // interpolate pragmatic to expanded
         interpolatedCriteria = this.pDiversionCriteria('pragmatic')
       }

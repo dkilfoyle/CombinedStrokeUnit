@@ -31,6 +31,15 @@ export default {
         pIschemic: 0.88 // proportion of not SAH - from ADT145
       },
       poplnUserParams: {
+        pPASTAPos: {
+          name: 'pPASTAPos',
+          val: 0.3,
+          default: 0.3,
+          type: 'percent',
+          group: 'ED',
+          label: '% PASTA Positive',
+          helper: '% of stroke that is PASTA Positive'
+        },
         nADHBStroke: {
           name: 'nADHBStroke',
           // From PP20 the total number of stroke (hemorrhage, ischemic, unspecified) discharges in 2017 was 163 + 159 + 294 + 192
@@ -46,8 +55,8 @@ export default {
           default: 535,
           type: 'number',
           group: 'Populations',
-          label: '# ADHB Stroke',
-          helper: 'Number of ADHB area stroke admissions in 2017',
+          label: '# ADHB Neuro Stroke',
+          helper: 'Number of ADHB area stroke admissions under Neurology in 2017',
           tip: 'From ADT145 the total number of stroke admissions (LOS>0) from Neuro in 2017 was 608.<br>Of these 69 were PSI transfers and 4 were diversions.<br>Thus total ADHB area stroke admissions in 2017 = 607-69-4 = 535'
         },
         nADHBTIA: {
@@ -56,7 +65,7 @@ export default {
           default: 114,
           type: 'number',
           group: 'Populations',
-          label: '# ADHB TIA',
+          label: '# ADHB TIA Admitted',
           helper: 'Number of TIA admissions (LOS>0d) in 2017'
         },
         nRehabWDHBUnder65: {
