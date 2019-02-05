@@ -7,9 +7,9 @@ const diversionParams = {
   },
   acuity: {
     statusquo: 0.49,
-    pragmatic: 0.49, // 0-4h from WDHB registry. From McMeekin = 81% known onset, 60% < 4h = 49%
-    expanded: 0.60, // 6h
-    future: 0.75 // 12h
+    pragmatic: 0.49 * 0.9, // 0-4h from WDHB registry. From McMeekin = 81% known onset, 60% < 4h = 49%, reducing by 10% (*0.9) following 2018 audit
+    expanded: 0.6 * 0.9, // 6h
+    future: 0.75 * 0.9 // 12h
   },
   hours: {
     statusquo: 0.61, // after hours
@@ -17,9 +17,9 @@ const diversionParams = {
     expanded: 0.61,
     future: 1.0 // all hours
   },
-  deficit: 0.44, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
-  baselinefunction: 0.79, // Basedline adequate function from Quinn et al
-  mimics: 1.2 // 20% mimics
+  deficit: 0.44 * 0.9, // Reeves et al = 44% NIHSS > 6 but PASTA is approximately twice as selective = 0.22
+  baselinefunction: 0.79 * 0.9, // Basedline adequate function from Quinn et al
+  mimics: 1.14 // 20% mimics adjusted to 1.14 based on 14% mimics in first 4 months of 2018 citywide diversions
 }
 
 export default {
@@ -33,7 +33,8 @@ export default {
           default: 2021,
           group: 'Prehospital',
           label: 'Diversion Expanded Year',
-          helper: 'Year that diversions reach Expanded model (symptom duration 6h)',
+          helper:
+            'Year that diversions reach Expanded model (symptom duration 6h)',
           type: 'number'
         },
         yDiversionsFutureStart: {
@@ -42,7 +43,8 @@ export default {
           default: 2025,
           group: 'Prehospital',
           label: 'Diversion Future Year',
-          helper: 'Year that diversions reach Future model (duration 12h, all day)',
+          helper:
+            'Year that diversions reach Future model (duration 12h, all day)',
           type: 'number'
         }
       }
@@ -50,11 +52,13 @@ export default {
   },
   methods: {
     pDiversionCriteria: function (model) {
-      return diversionParams.acuity[model] *
+      return (
+        diversionParams.acuity[model] *
         diversionParams.hours[model] *
         diversionParams.deficit *
         diversionParams.baselinefunction *
         diversionParams.mimics
+      )
     },
     getDiversions: function (year) {
       // diversion models change abruptly based on policy
@@ -72,14 +76,27 @@ export default {
       }
       console.assert(interpolatedCriteria <= 1.0, interpolatedCriteria)
       return Math.round(
-        this.getAllAdultStrokeByRegion('MetroNonADHB', year, this.params.popGrowth.val) * interpolatedCriteria
+        this.getAllAdultStrokeByRegion(
+          'MetroNonADHB',
+          year,
+          this.params.popGrowth.val
+        ) * interpolatedCriteria
       )
     },
     nDiversions: function (year) {
       return this.getDiversions(year)
     },
     percentDiversions: function (year) {
-      return Math.round(this.nDiversions(year) / this.getAllAdultStrokeByRegion('MetroNonADHB', year, this.params.popGrowth.val) * 100, 0)
+      return Math.round(
+        (this.nDiversions(year) /
+          this.getAllAdultStrokeByRegion(
+            'MetroNonADHB',
+            year,
+            this.params.popGrowth.val
+          )) *
+          100,
+        0
+      )
     }
   }
 }

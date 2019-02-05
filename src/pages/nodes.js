@@ -20,8 +20,7 @@ export default {
         },
         {
           id: 'diversions',
-          label: '*Diversions*\nn = ' +
-            n(this.getDiversions(this.year)),
+          label: '*Diversions*\nn = ' + n(this.getDiversions(this.year)),
           level: 0,
           group: 'start'
         },
@@ -47,14 +46,23 @@ export default {
         },
         {
           id: 'otherstroke',
-          label: `*WDHB <65y\nn = ${n(this.nRehabWDHBUnder65(this.year))}\n*Other Specialty\nn = ${n(this.nRehabOtherStroke(this.year))}`,
+          label: `*WDHB <65y\nn = ${n(
+            this.nRehabWDHBUnder65(this.year)
+          )}\n*Other Specialty\nn = ${n(this.nRehabOtherStroke(this.year))}`,
+          level: 0,
+          group: 'start'
+        },
+        {
+          id: 'nonstrokerehab',
+          label: `*Nonstroke Rehab\nn = ${n(this.nRehabNonStroke(this.year))}`,
           level: 0,
           group: 'start'
         },
         // ===================== ED
         {
           id: 'psinegexternal',
-          label: '*PSI / IVT -ve*\nExternal: ' +
+          label:
+            '*PSI / IVT -ve*\nExternal: ' +
             n(this.nPSIIVTNegExternal(this.year)),
           level: 1,
           group: 'norm'
@@ -91,7 +99,8 @@ export default {
         },
         {
           id: 'psipos',
-          label: '*PSI*\nN= ' +
+          label:
+            '*PSI*\nN= ' +
             n(this.nPSI(this.year)) +
             '\nTransfers: ' +
             n(this.nPSITransfer(this.year)) +

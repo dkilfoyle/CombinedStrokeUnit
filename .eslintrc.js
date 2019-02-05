@@ -15,22 +15,21 @@ module.exports = {
     'standard'
   ],
   // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
+  plugins: ['vue', 'prettier'],
   globals: {
-    'ga': true, // Google Analytics
-    'cordova': true,
-    '__statics': true
+    ga: true, // Google Analytics
+    cordova: true,
+    __statics: true
   },
   // add your custom rules here
-  'rules': {
+  rules: {
     // allow async-await
     'generator-star-spacing': 'off',
 
     // allow paren-less arrow functions
     'arrow-parens': 0,
     'one-var': 0,
+    semi: 0,
 
     'import/first': 0,
     'import/named': 2,

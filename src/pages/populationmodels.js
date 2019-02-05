@@ -56,8 +56,10 @@ export default {
           type: 'number',
           group: 'Populations',
           label: '# ADHB Neuro Stroke',
-          helper: 'Number of ADHB area stroke admissions under Neurology in 2017',
-          tip: 'From ADT145 the total number of stroke admissions (LOS>0) from Neuro in 2017 was 608.<br>Of these 69 were PSI transfers and 4 were diversions.<br>Thus total ADHB area stroke admissions in 2017 = 607-69-4 = 535'
+          helper:
+            'Number of ADHB area stroke admissions under Neurology in 2017',
+          tip:
+            'From ADT145 the total number of stroke admissions (LOS>0) from Neuro in 2017 was 608.<br>Of these 69 were PSI transfers and 4 were diversions.<br>Thus total ADHB area stroke admissions in 2017 = 607-69-4 = 535'
         },
         nADHBTIA: {
           name: 'nADHBTIA',
@@ -84,7 +86,17 @@ export default {
           type: 'number',
           group: 'Populations',
           label: '# Non-Neuro Stroke Rehab',
-          helper: 'Number of patients from other specialties (eg Gen Med) requiring stroke rehab'
+          helper:
+            'Number of patients from other specialties (eg Gen Med) requiring stroke rehab'
+        },
+        nRehabNonStroke: {
+          name: 'nRehabNonStroke',
+          val: 144,
+          default: 144,
+          type: 'number',
+          group: 'Populations',
+          label: '# Non-Stroke Rehab',
+          helper: 'Non-stroke rehab patients (estimate only)'
         },
         popGrowth: {
           name: 'popGrowth',
@@ -104,9 +116,20 @@ export default {
     getRegionTotalPopulation: function (region) {
       switch (region) {
         case 'Metro':
-          return this.populations.ADHB + this.populations.CMDHB + this.populations.Waitemata
+          return (
+            this.populations.ADHB +
+            this.populations.CMDHB +
+            this.populations.Waitemata
+          )
         case 'NonMetro':
-          return this.populations.Northland + this.populations.HawkesBay + this.populations.Lakes + this.populations.Tairawhiti + this.populations.Taranaki + this.populations.Waikato
+          return (
+            this.populations.Northland +
+            this.populations.HawkesBay +
+            this.populations.Lakes +
+            this.populations.Tairawhiti +
+            this.populations.Taranaki +
+            this.populations.Waikato
+          )
         case 'MetroNonADHB':
           return this.populations.CMDHB + this.populations.Waitemata
         case 'WTK':
@@ -119,51 +142,58 @@ export default {
       // = totalpopln * annual growth * adults * incidence * hospitalised * notSAH
       return Math.round(
         this.populations[DHB] *
-        (1.0 + popGrowth) ** (year - 2017) *
-        this.poplnParams.pAdults *
-        this.poplnParams.pIncidence *
-        this.poplnParams.pHospitalised *
-        this.poplnParams.pNotSAH
+          (1.0 + popGrowth) ** (year - 2017) *
+          this.poplnParams.pAdults *
+          this.poplnParams.pIncidence *
+          this.poplnParams.pHospitalised *
+          this.poplnParams.pNotSAH
       )
     },
     getAllAdultStrokeByRegion: function (region, year, popGrowth) {
       // = totalpopln * annual growth * adults * incidence * hospitalised * notSAH
       return Math.round(
         this.getRegionTotalPopulation(region) *
-        (1.0 + popGrowth) ** (year - 2017) *
-        this.poplnParams.pAdults *
-        this.poplnParams.pIncidence *
-        this.poplnParams.pHospitalised *
-        this.poplnParams.pNotSAH
+          (1.0 + popGrowth) ** (year - 2017) *
+          this.poplnParams.pAdults *
+          this.poplnParams.pIncidence *
+          this.poplnParams.pHospitalised *
+          this.poplnParams.pNotSAH
       )
     },
     getIschemicAdultStrokeByRegion: function (Region, year, popGrowth) {
-      return Math.round(this.getAllAdultStrokeByRegion(Region, year, popGrowth) * 0.81)
+      return Math.round(
+        this.getAllAdultStrokeByRegion(Region, year, popGrowth) * 0.81
+      )
     },
     nADHBStroke: function (year) {
       return Math.round(
         this.params.nADHBStroke.val *
-        (1.0 + this.params.popGrowth.val) ** (year - 2017)
+          (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     },
     nADHBTIA: function (year) {
       return Math.round(
         this.params.nADHBTIA.val *
-        (1.0 + this.params.popGrowth.val) ** (year - 2017)
+          (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     },
     nRehabWDHBUnder65: function (year) {
       return Math.round(
         this.params.nRehabWDHBUnder65.val *
-        (1.0 + this.params.popGrowth.val) ** (year - 2017)
+          (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     },
     nRehabOtherStroke: function (year) {
       return Math.round(
         this.params.nRehabOtherStroke.val *
-        (1.0 + this.params.popGrowth.val) ** (year - 2017)
+          (1.0 + this.params.popGrowth.val) ** (year - 2017)
+      )
+    },
+    nRehabNonStroke: function (year) {
+      return Math.round(
+        this.params.nRehabNonStroke.val *
+          (1.0 + this.params.popGrowth.val) ** (year - 2017)
       )
     }
-
   }
 }

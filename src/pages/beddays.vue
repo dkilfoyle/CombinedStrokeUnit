@@ -199,6 +199,7 @@
                 q-card-separator
                 q-card-main
                   p Rates are proportion of all stroke presentation.<br>Acuity measures the accepted duration of stroke symptoms (4, 6, 12h).<br>OpHours measures the proportion of the day that diversions are active (afterhours vs 24h).<br>Deficit measures the required clinical deficit (LAMS etc).<br>Mimics is 1.0 + ratio of mimics to stroke.
+                  p The following adjustments were made after analysing the first 5 months of the full metro service at the end of 2018: Mimics reduced from 20% to 14%, Acuity, Deficit and Baseline Function eligibility were reduced by 10% across all models.
                   .row.justify-center(style="overflow:auto")
                     table.q-table-old
                       thead
@@ -236,7 +237,7 @@ import diversionmodels from './diversionmodels'
 import ivtmodels from './ivtmodels'
 import populationmodels from './populationmodels'
 import bedmodels from './bedmodels'
-import {Chart} from 'highcharts-vue'
+import { Chart } from 'highcharts-vue'
 
 export default {
   name: 'beddays',
@@ -274,19 +275,19 @@ export default {
         2030
       ],
       paramGroups: [
-        {label: 'Populations', icon: 'people'},
-        {label: 'Prehospital', icon: 'mdi-ambulance'},
-        {label: 'ED', icon: 'mdi-hospital'},
-        {label: 'Neuroradiology', icon: 'mdi-radioactive'},
-        {label: 'HASU/ASU', icon: 'mdi-needle'},
-        {label: 'Rehab', icon: 'favorite'},
-        {label: 'Beds', icon: 'mdi-hotel'}
+        { label: 'Populations', icon: 'people' },
+        { label: 'Prehospital', icon: 'mdi-ambulance' },
+        { label: 'ED', icon: 'mdi-hospital' },
+        { label: 'Neuroradiology', icon: 'mdi-radioactive' },
+        { label: 'HASU/ASU', icon: 'mdi-needle' },
+        { label: 'Rehab', icon: 'favorite' },
+        { label: 'Beds', icon: 'mdi-hotel' }
       ],
       showmodel: 'pragmatic',
       allmodels: [
-        {value: 'pragmatic', label: 'Pragmatic'},
-        {value: 'expanded', label: 'Expanded'},
-        {value: 'future', label: 'Future'}
+        { value: 'pragmatic', label: 'Pragmatic' },
+        { value: 'expanded', label: 'Expanded' },
+        { value: 'future', label: 'Future' }
       ],
       year: 2020
     }
@@ -294,11 +295,11 @@ export default {
   computed: {
     patientsChartData: function () {
       return {
-        title: {text: 'Patients'},
-        xAxis: {categories: this.tableYears},
-        yAxis: {title: {text: 'Patients per year'}},
+        title: { text: 'Patients' },
+        xAxis: { categories: this.tableYears },
+        yAxis: { title: { text: 'Patients per year' } },
         series: [
-          {name: 'PSI', data: this.tableYears.map(year => this.nPSI(year))},
+          { name: 'PSI', data: this.tableYears.map(year => this.nPSI(year)) },
           {
             name: 'Diversions',
             data: this.tableYears.map(year => this.nDiversions(year))
@@ -308,9 +309,9 @@ export default {
     },
     beddaysChartData: function () {
       return {
-        title: {text: 'Bed Days'},
-        xAxis: {categories: this.tableYears},
-        yAxis: {title: {text: 'Bed Days per Year'}},
+        title: { text: 'Bed Days' },
+        xAxis: { categories: this.tableYears },
+        yAxis: { title: { text: 'Bed Days per Year' } },
         series: [
           {
             name: 'HASU',
@@ -338,9 +339,9 @@ export default {
     },
     dischargesChartData: function () {
       return {
-        title: {text: 'Discharges'},
-        xAxis: {categories: this.tableYears},
-        yAxis: {title: {text: 'Patients per year'}},
+        title: { text: 'Discharges' },
+        xAxis: { categories: this.tableYears },
+        yAxis: { title: { text: 'Patients per year' } },
         series: [
           {
             name: 'Repatriations',

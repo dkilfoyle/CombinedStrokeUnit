@@ -49,7 +49,8 @@ export default {
           group: 'HASU/ASU',
           label: 'ASU LOS Stroke',
           helper: 'Average LOS in for stroke patient in ASU',
-          tip: 'ADT145 Total Acute LOS = 3.8d. ASU phase will be shorter for those coming from HASU.'
+          tip:
+            'ADT145 Total Acute LOS = 3.8d. ASU phase will be shorter for those coming from HASU.'
         },
         nASULOSTIA: {
           name: 'nASULOSTIA',
@@ -86,17 +87,20 @@ export default {
   },
   methods: {
     nRehabNeuroStroke: function (year) {
-      return Math.round(
-        this.nASUStroke(year) * this.params.pRehab.val
-      )
+      return Math.round(this.nASUStroke(year) * this.params.pRehab.val)
     },
     nRehabTotal: function (year) {
-      return this.nRehabNeuroStroke(year) + this.nRehabWDHBUnder65(year) + this.nRehabOtherStroke(year)
+      return (
+        this.nRehabNeuroStroke(year) +
+        this.nRehabWDHBUnder65(year) +
+        this.nRehabOtherStroke(year) +
+        this.nRehabNonStroke(year)
+      )
     },
     nHASU: function (year) {
       return Math.round(
         this.nPSIIVTNegADHB(year) * this.params.pPSIIVTNegHASU.val +
-        this.nPSIIVT(year)
+          this.nPSIIVT(year)
       )
     },
     nASU: function (year) {
@@ -105,9 +109,9 @@ export default {
     nASUStroke: function (year) {
       return Math.round(
         this.nPASTANeg(year) +
-        this.nPSIIVTNegADHB(year) * (1.0 - this.params.pPSIIVTNegHASU.val) +
-        this.nHASU(year) -
-        this.nPSIIVTExternal(year)
+          this.nPSIIVTNegADHB(year) * (1.0 - this.params.pPSIIVTNegHASU.val) +
+          this.nHASU(year) -
+          this.nPSIIVTExternal(year)
       )
     },
     nASUTIA: function (year) {
@@ -120,7 +124,7 @@ export default {
     nASUBedDays: function (year) {
       return Math.round(
         this.nASUStroke(year) * this.params.nASULOSStroke.val +
-        this.nASUTIA(year) * this.params.nASULOSTIA.val
+          this.nASUTIA(year) * this.params.nASULOSTIA.val
       )
     },
     nRehabBedDays: function (year) {
@@ -129,17 +133,17 @@ export default {
 
     nHASUBeds: function (year) {
       return Math.ceil(
-        this.nHASUBedDays(year) * 1 / this.params.pHASUOccupancy.val / 365
+        (this.nHASUBedDays(year) * 1) / this.params.pHASUOccupancy.val / 365
       )
     },
     nASUBeds: function (year) {
       return Math.ceil(
-        this.nASUBedDays(year) * 1 / this.params.pASUOccupancy.val / 365
+        (this.nASUBedDays(year) * 1) / this.params.pASUOccupancy.val / 365
       )
     },
     nRehabBeds: function (year) {
       return Math.ceil(
-        this.nRehabBedDays(year) * 1 / this.params.pASUOccupancy.val / 365.0
+        (this.nRehabBedDays(year) * 1) / this.params.pASUOccupancy.val / 365.0
       )
     },
     nTotalBeds: function (year) {
